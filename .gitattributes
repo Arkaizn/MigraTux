@@ -1,0 +1,3 @@
+tests/fixtures/*.csv -text
+*.sh text eol=lf
+*.bats text eol=lf

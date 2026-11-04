@@ -1,0 +1,43 @@
+Match,WindowsApp,LinuxApp,Package,Source,Note
+Microsoft Visual C++*,Visual C++ Redistributable,-,,none,Windows runtime - not needed on Linux
+Microsoft .NET*,.NET Runtime,-,,none,Windows runtime - not needed on Linux
+Microsoft Edge WebView2*,Edge WebView2 Runtime,-,,none,Windows runtime - not needed on Linux
+Microsoft 365*,Microsoft 365 Apps,LibreOffice,libreoffice,apt,Opens Word/Excel/PowerPoint files; check VBA macros and complex layouts
+Microsoft Office*,Microsoft Office,LibreOffice,libreoffice,apt,Opens Word/Excel/PowerPoint files; check VBA macros and complex layouts
+Microsoft Outlook*,Outlook,Thunderbird,org.mozilla.Thunderbird,flatpak,Exchange/M365 mailboxes: Outlook on the web in the browser or a Thunderbird Exchange add-on
+Microsoft Teams*,Microsoft Teams,Teams in the browser,,none,No official Linux client; use teams.microsoft.com (unofficial flatpak com.github.IsmaelMartinez.teams_for_linux exists)
+Microsoft Edge*,Microsoft Edge,Microsoft Edge,com.microsoft.Edge,flatpak,Sign in to sync favourites
+Microsoft OneDrive*,OneDrive,OneDrive client (community),onedrive,apt,abraunegg client; needs a one-time login in the terminal
+Microsoft Visio*,Visio,draw.io,com.jgraph.drawio.desktop,flatpak,Imports .vsdx with limits
+Microsoft Access*,Access,-,,winboat,No working Linux equivalent for Access apps
+Microsoft Visual Studio Code*,Visual Studio Code,Visual Studio Code,com.visualstudio.code,flatpak,
+Google Chrome*,Chrome,Google Chrome,com.google.Chrome,flatpak,Sign in to sync bookmarks
+Google Drive*,Google Drive,GNOME Online Accounts,,none,Built into the Files app
+Mozilla Firefox*,Firefox,Firefox,org.mozilla.firefox,flatpak,Ubuntu also ships Firefox as a snap; profile can be copied
+Mozilla Thunderbird*,Thunderbird,Thunderbird,org.mozilla.Thunderbird,flatpak,Profile can be copied
+Adobe Acrobat*,Acrobat / Acrobat Reader,Document Viewer (Evince),evince,apt,View and fill forms; Acrobat Pro editing is not covered
+Adobe Photoshop*,Photoshop,GIMP,gimp,apt,Opens PSD with limits
+Adobe Illustrator*,Illustrator,Inkscape,inkscape,apt,Opens AI/PDF/SVG
+CorelDRAW*,CorelDRAW,Inkscape,inkscape,apt,CDR import with limits
+paint.net*,Paint.NET,Pinta,com.github.PintaProject.Pinta,flatpak,
+7-Zip*,7-Zip,7-Zip,7zip,apt,RAR needs 7zip-rar (multiverse)
+WinRAR*,WinRAR,7-Zip,7zip,apt,RAR needs 7zip-rar (multiverse)
+VLC media player*,VLC,VLC,vlc,apt,
+Notepad++*,Notepad++,Text Editor,gnome-text-editor,apt,Preinstalled on Ubuntu Desktop
+KeePass*,KeePass,KeePassXC,keepassxc,apt,Opens .kdbx files directly
+FileZilla*,FileZilla,FileZilla,filezilla,apt,
+PuTTY*,PuTTY,PuTTY,putty,apt,Or the built-in ssh command
+TeamViewer*,TeamViewer,RustDesk,com.rustdesk.RustDesk,flatpak,TeamViewer also has a vendor .deb (licence needed)
+AnyDesk*,AnyDesk,AnyDesk,com.anydesk.Anydesk,flatpak,
+Zoom*,Zoom,Zoom,us.zoom.Zoom,flatpak,
+Slack*,Slack,Slack,com.slack.Slack,flatpak,
+Spotify*,Spotify,Spotify,com.spotify.Client,flatpak,
+Dropbox*,Dropbox,Dropbox,com.dropbox.Client,flatpak,
+Cisco*Client*,Cisco AnyConnect / Secure Client,OpenConnect VPN,network-manager-openconnect-gnome,apt,Check the company VPN profile
+Cisco AnyConnect*,Cisco AnyConnect,OpenConnect VPN,network-manager-openconnect-gnome,apt,Check the company VPN profile
+Java*,Java Runtime,OpenJDK,default-jre,apt,
+Git,Git for Windows,Git,git,apt,
+Banana*,Banana Buchhaltung,Banana Accounting Plus (Linux),,none,Vendor offers a Linux version on banana.ch (not in apt or Flathub)
+Abacus*,Abacus,-,,winboat,Check if AbaWeb in the browser is enough
+Sage 50*,Sage 50,-,,winboat,
+AutoCAD*,AutoCAD,-,,winboat,LibreCAD (apt librecad) only for simple 2D drawings
