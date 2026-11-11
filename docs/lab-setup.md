@@ -4,7 +4,7 @@ You have three zip files. Each one is a VM for VMware Workstation.
 
 | VM | What it is | RAM |
 |---|---|---|
-| `mtx-server` | the MigraTux server (Ubuntu Server) | 4 GB |
+| `mtx-server` | the MigraTux server (Ubuntu Server with Docker) | 4 GB |
 | Windows Client | the Windows 10 PC that gets migrated | 4 GB |
 | `mtx-client-pxe` | an empty PC; Linux gets installed on it | **8 GB** |
 
@@ -26,41 +26,35 @@ Your computer needs 16 GB RAM, 150 GB free disk space and internet.
 
 Start `mtx-server`, log in and type these commands.
 
-1. Install Docker:
-   ```bash
-   sudo apt update && sudo apt install -y docker.io docker-compose-v2
-   sudo usermod -aG docker $USER
-   ```
-   Log out and log in again.
-2. Get the newest code:
+1. Get the newest code:
    ```bash
    cd ~/MigraTux
    git pull
    ```
-3. Look up the server's network name and IP address:
+2. Look up the server's network name and IP address:
    ```bash
    ip -4 -br addr
    ```
    Example output: `ens33  UP  192.168.80.130/24`. Here the name is `ens33` and the IP is `192.168.80.130`. Write yours down.
-4. Create the settings file:
+3. Create the settings file:
    ```bash
    cd server
    cp .env.example .env
    nano .env
    ```
    Change `SERVER_IP=` and `PXE_INTERFACE=` to your two values. Save with Ctrl+O, Enter. Close with Ctrl+X.
-5. Run the setup (downloads 3.9 GB, takes a while):
+4. Run the setup (downloads 3.9 GB, takes a while):
    ```bash
    ./setup.sh
    ```
    The last line must say `setup: done`.
-6. Start the server:
+5. Start the server:
    ```bash
    docker compose up -d
    docker compose ps
    ```
    `samba`, `pxe` and `http` must all say "running".
-7. Shut the VM down (`sudo poweroff`), take a snapshot and name it `server-clean`.
+6. Shut the VM down (`sudo poweroff`), take a snapshot and name it `server-clean`.
 
 ## 3. Set up Windows
 
