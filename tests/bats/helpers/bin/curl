@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Fake curl for the bats tests: a tiny "server" in the folder $FAKE_SERVER.
+# Supports what the MigraTux client scripts use: GET (to stdout or -o),
+# PUT with -T FILE|-, -X DELETE, -w '%{http_code}', -f.
+# Every request is logged to $FAKE_SERVER/.log as "METHOD /path".
+# FAKE_CURL_FAIL: regex; requests whose URL matches fail like a dead server.
+set -u
+: "${FAKE_SERVER:?FAKE_SERVER is not set}"
+method=GET upload="" out="" write="" fail=0 url=""
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -T) upload="$2"; method=PUT; shift ;;
+        -X) method="$2"; shift ;;
+        -o) out="$2"; shift ;;
+        -w) write="$2"; shift ;;
+        -m|-H|--retry|--retry-delay) shift ;;
+        --*) ;;
+        -*) [[ "$1" == *f* ]] && fail=1 ;;
+        *) url="$1" ;;
+    esac
+    shift
+done
+path="/${url#*://*/}"
+file="$FAKE_SERVER$path"
+echo "$method $path" >> "$FAKE_SERVER/.log"
+
+if [[ -n "${FAKE_CURL_FAIL:-}" && "$url" =~ $FAKE_CURL_FAIL ]]; then
+    [[ "$method" == PUT && "$upload" == - ]] && cat > /dev/null
+    [[ -n "$write" ]] && printf '000'
+    exit 7
+fi
+
+code=200
+case "$method" in
+    PUT)
+        mkdir -p "$(dirname "$file")"
+        if [[ "$upload" == - ]]; then cat > "$file"; else cp "$upload" "$file"; fi
+        code=201 ;;
+    DELETE)
+        if [[ -e "$file" ]]; then rm -f "$file"; code=204; else code=404; fi ;;
+    GET)
+        if [[ -f "$file" ]]; then
+            if [[ -n "$out" ]]; then cp "$file" "$out"; else cat "$file"; fi
+        else
+            code=404
+        fi ;;
+esac
+[[ -n "$write" ]] && printf '%s' "$code"
+if [[ $fail -eq 1 && $code -ge 400 ]]; then
+    exit 22
+fi
+exit 0

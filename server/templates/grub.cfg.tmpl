@@ -1,0 +1,39 @@
+# Rendered by server/setup.sh to <tftp>/grub/grub.cfg. Loaded by GRUB after PXE boot.
+#
+# A PC only installs when the server has a job for its MAC address
+# (grub/hosts/<mac>.cfg, written by `migratux start|rollback`). Without a job
+# it boots from its disk, so a PC that still has network boot switched on
+# is never wiped by accident.
+
+set timeout=8
+set default=local
+set mtx_mode=
+set mtx_host=
+
+if [ -n "$net_default_mac" ]; then
+    if [ -s "$prefix/hosts/$net_default_mac.cfg" ]; then
+        source "$prefix/hosts/$net_default_mac.cfg"
+    fi
+fi
+
+set mtx_args="ip=dhcp url=http://@SERVER_IP@:@HTTP_PORT@/ubuntu.iso autoinstall ds=nocloud-net;s=http://@SERVER_IP@:@HTTP_PORT@/autoinstall/"
+
+if [ -n "$mtx_mode" ]; then
+    set default=job
+    set timeout=5
+    menuentry "MigraTux: $mtx_mode $mtx_host (startet automatisch)" --id job {
+        echo "MigraTux: lade Installer (ca. 3 GB, bitte warten) ..."
+        linux /vmlinuz $mtx_args migratux.mode=$mtx_mode migratux.host=$mtx_host ---
+        initrd /initrd
+    }
+fi
+
+menuentry "Von der Festplatte starten" --id local {
+    exit
+}
+
+menuentry "Manuell: Ubuntu installieren - LOESCHT DIE FESTPLATTE, ohne Backup" --id manual {
+    echo "MigraTux: lade Installer (ca. 3 GB, bitte warten) ..."
+    linux /vmlinuz $mtx_args migratux.mode=install ---
+    initrd /initrd
+}

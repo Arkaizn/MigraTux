@@ -1,0 +1,18 @@
+# MigraTux first boot: installs the apps and restores the data (reconfigure/).
+# Runs before the login screen and shows its progress on the first console.
+[Unit]
+Description=MigraTux first boot (apps and data)
+Wants=network-online.target
+After=network-online.target
+Before=display-manager.service getty@tty1.service
+ConditionPathExists=!/var/lib/migratux/done
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/migratux-firstboot
+TimeoutStartSec=infinity
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

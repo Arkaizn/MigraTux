@@ -1,0 +1,23 @@
+# Rendered by server/setup.sh. Do not edit the copy in data/conf.
+# Proxy-DHCP: answers only PXE clients with the boot server and file name.
+# IP addresses still come from the existing DHCP server (router, VMware NAT).
+
+# No DNS server.
+port=0
+user=root
+interface=@PXE_INTERFACE@
+log-dhcp
+log-facility=-
+
+# "proxy" = never hand out addresses in the subnet of this IP.
+dhcp-range=@SERVER_IP@,proxy
+
+# UEFI x86-64 clients (architecture 7 and 9). BIOS clients get no answer.
+dhcp-match=set:efi64,option:client-arch,7
+dhcp-match=set:efi64,option:client-arch,9
+pxe-service=tag:efi64,BC_EFI,"MigraTux",bootx64.efi,@SERVER_IP@
+pxe-service=tag:efi64,X86-64_EFI,"MigraTux",bootx64.efi,@SERVER_IP@
+dhcp-boot=tag:efi64,bootx64.efi,,@SERVER_IP@
+
+enable-tftp
+tftp-root=/srv/tftp

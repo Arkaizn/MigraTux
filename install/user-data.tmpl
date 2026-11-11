@@ -1,0 +1,45 @@
+#cloud-config
+# MigraTux unattended install of Ubuntu 24.04 (Subiquity autoinstall).
+# Template: server/setup.sh renders it to <http>/autoinstall/user-data.
+# Booted from the live-server ISO over PXE; the desktop comes from the internet.
+autoinstall:
+  version: 1
+  locale: de_CH.UTF-8
+  keyboard:
+    layout: ch
+  timezone: Europe/Zurich
+  refresh-installer:
+    update: false
+  identity:
+    hostname: migratux-client
+    realname: MigraTux Admin
+    username: @ADMIN_USER@
+    password: "@ADMIN_PASSWORD_HASH@"
+  ssh:
+    install-server: true
+    allow-pw: true
+  # Whole disk, no LVM. Picks the largest disk, like install/mtx-early.sh.
+  storage:
+    layout:
+      name: direct
+  packages:
+    - ubuntu-desktop-minimal
+    - language-pack-de
+    - language-pack-gnome-de
+    - cifs-utils
+    - flatpak
+    - curl
+  # Before anything is wiped: fetch the MigraTux scripts and run the job this
+  # PC was booted for (install, migrate = disk image first, restore = rollback).
+  # A failing command stops the install, so the disk stays untouched.
+  early-commands:
+    - mkdir -p /run/migratux
+    - curl -fsS --retry 5 --retry-delay 3 -o /run/migratux-client.tar.gz http://@SERVER_IP@:@HTTP_PORT@/files/migratux-client.tar.gz
+    - tar -xzf /run/migratux-client.tar.gz -C /run/migratux
+    - curl -fsS --retry 5 --retry-delay 3 -o /run/migratux/client.env http://@SERVER_IP@:@HTTP_PORT@/files/client.env
+    - bash /run/migratux/install/mtx-early.sh
+  # After the install: put the first-boot hook into the new system and remove
+  # the PXE job on the server.
+  late-commands:
+    - bash /run/migratux/install/mtx-late.sh /target
+  shutdown: reboot

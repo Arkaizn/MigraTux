@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Milestone | M0 (follow-up), repeat for every new `.ps1` in `collect/` |
-| Test doc version | 2026-11-04 |
+| Test doc version | 2026-11-11 |
 | Time estimate | ~15 min (setup 5, run 5, collecting results 5) |
 | Destructive? | no |
 
@@ -55,7 +55,7 @@ Prove that `collect/Test-InventoryCsv.ps1` and its Pester tests also work on **W
 - [ ] Step 2 shows `5.1.x` and `Desktop`.
 - [ ] Step 4: `Valid : True`, `RowCount : 26`, `Errors : {}`.
 - [ ] Step 5: `Valid : True`, `RowCount : 1`.
-- [ ] Step 6: `Tests Passed: 18, Failed: 0`.
+- [ ] Step 6: `Failed: 0` (since M1/M2 the suite also tests `Get-Inventory.ps1` and `Backup-ToServer.ps1`: about 53 passed, 3 skipped, because three tests need Linux or PowerShell 7).
 - [ ] No red error text in any step.
 
 ## If it fails

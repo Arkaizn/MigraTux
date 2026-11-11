@@ -1,3 +1,9 @@
 CLAUDE.md
 .claude/
 brain/
+
+# MigraTux server: local settings and downloaded/collected data
+server/.env
+server/data/
+# output of the collect scripts
+out/

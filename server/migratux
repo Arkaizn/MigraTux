@@ -1,0 +1,322 @@
+#!/usr/bin/env bash
+# MigraTux control command, runs on the server (M7).
+#
+#   migratux status [HOST]          clients, backups, disk images, PXE jobs, last step
+#   migratux start HOST [--no-image|--new-image] [--force]
+#                                   next network boot of HOST: disk image, then install Linux.
+#                                   An existing image is kept unless --new-image is given.
+#   migratux start MAC              next network boot of this MAC: install only (test VMs)
+#   migratux rollback HOST [--no-verify]
+#                                   next network boot of HOST: write the disk image back (Windows)
+#   migratux stop HOST|MAC          remove the PXE job
+#   migratux assign HOST MAC        treat MAC as HOST instead of the MACs in its inventory
+#                                   (lab: install on another VM)
+#   migratux unassign HOST          back to the MACs of the inventory
+#
+# HOST is the Windows computer name = the folder in the share. A job stays
+# until the client reports that it is done. Settings: server/.env.
+# Log: <DATA_DIR>/log/migratux.log. Exit: 0 ok, 1 error, 2 usage.
+set -euo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=server/lib.sh
+source "$here/lib.sh"
+
+MIN_DISK_MB=25000
+MIN_RAM_MB=6000
+
+usage() {
+    sed -n '2,18p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    exit 2
+}
+
+# job_write MAC MODE HOST
+job_write() {
+    mkdir -p "$MTX_HOSTS"
+    printf 'set mtx_mode=%s\nset mtx_host=%s\n' "$2" "$3" > "$MTX_HOSTS/$1.cfg"
+}
+
+# job_of MAC: "mode host" or nothing.
+job_of() {
+    local f="$MTX_HOSTS/$1.cfg"
+    [[ -r "$f" ]] || return 0
+    echo "$(sed -n 's/^set mtx_mode=//p' "$f") $(sed -n 's/^set mtx_host=//p' "$f")"
+}
+
+# last_event MAC...: "<age> <step>: <text>" of the newest event of these MACs.
+last_event() {
+    local mac dir newest="" line f age now
+    for mac in "$@"; do
+        dir="$MTX_EVENTS/${mac//:/-}"
+        [[ -d "$dir" ]] || continue
+        line="$(find "$dir" -maxdepth 1 -type f -printf '%T@ %p\n' | sort -n | tail -n 1)"
+        [[ -n "$line" ]] || continue
+        if [[ -z "$newest" ]] || awk -v a="${line%% *}" -v b="${newest%% *}" 'BEGIN { exit !(a > b) }'; then
+            newest="$line"
+        fi
+    done
+    [[ -n "$newest" ]] || return 0
+    f="${newest#* }"
+    now="$(date +%s)"
+    age=$(( now - $(printf '%.0f' "${newest%% *}") ))
+    if (( age < 120 )); then age="${age}s"; elif (( age < 7200 )); then age="$((age / 60))min"; else age="$((age / 3600))h"; fi
+    echo "$(basename "$f"): $(head -n 1 "$f" | tr -d '\r') (vor $age)"
+}
+
+# image_info HOST KEY
+image_info() {
+    local f="$MTX_IMAGES/$1/disk.info"
+    [[ -r "$f" ]] || return 0
+    sed -n "s/^$2=//p" "$f" | head -n 1
+}
+
+human_mb() {
+    awk -v b="$1" 'BEGIN { if (b >= 1024) printf "%.1f GB", b / 1024; else printf "%d MB", b }'
+}
+
+status_host() {
+    local dir="$1" host inv macs mac backup="nein" image="nein" jobs="" ext bytes
+    host="$(basename "$dir")"
+    mapfile -t macs < <(mtx_host_macs "$dir")
+    if [[ -r "$dir/manifest.sha256" ]]; then
+        backup="ja ($(wc -l < "$dir/manifest.sha256") Dateien)"
+    fi
+    ext="$(image_info "$host" ext)"
+    if [[ -n "$ext" && -r "$MTX_IMAGES/$host/disk.img.$ext" ]]; then
+        bytes="$(stat -c %s "$MTX_IMAGES/$host/disk.img.$ext")"
+        image="ja ($(human_mb $((bytes / 1024 / 1024))), $(image_info "$host" date))"
+    fi
+    for mac in "${macs[@]}"; do
+        if [[ -n "$(job_of "$mac")" ]]; then
+            jobs="$(job_of "$mac")"
+            jobs="${jobs%% *}"
+        fi
+    done
+    echo "$host"
+    if inv="$(mtx_host_inventory "$dir")"; then
+        echo "  Inventar:     $(basename "$inv")"
+    else
+        echo "  Inventar:     fehlt"
+    fi
+    echo "  MAC:          ${macs[*]:-unbekannt}"
+    echo "  Backup:       $backup"
+    echo "  Disk-Abbild:  $image"
+    echo "  PXE-Job:      ${jobs:-keiner}"
+    echo "  Letzter Stand: $(last_event "${macs[@]}")"
+    if [[ -r "$dir/report.txt" ]]; then
+        echo "  Bericht:      $dir/report.txt"
+    fi
+}
+
+cmd_status() {
+    local dir found=0 f mac job known
+    if [[ -n "${1:-}" ]]; then
+        dir="$(mtx_host_dir "$1")" || mtx_die "no client folder '$1' in $MTX_SHARE"
+        status_host "$dir"
+        return 0
+    fi
+    known=" "
+    for dir in "$MTX_SHARE"/*/; do
+        [[ -d "$dir" ]] || continue
+        dir="${dir%/}"
+        [[ "$(basename "$dir")" == _* ]] && continue
+        found=1
+        status_host "$dir"
+        known+="$(mtx_host_macs "$dir" | tr '\n' ' ')"
+        echo
+    done
+    [[ $found -eq 1 ]] || echo "Noch keine Clients in $MTX_SHARE (zuerst Inventar + Backup auf dem Windows-PC)."
+    # MACs with a job or with events that belong to no client folder (migratux start MAC).
+    while read -r mac; do
+        [[ -n "$mac" ]] || continue
+        [[ "$known" == *" $mac "* ]] && continue
+        job="$(job_of "$mac")"
+        job="${job%% *}"
+        echo "$mac (ohne Inventar)"
+        echo "  PXE-Job:      ${job:-keiner}"
+        echo "  Letzter Stand: $(last_event "$mac")"
+        echo
+    done < <(
+        {
+            for f in "$MTX_HOSTS"/*.cfg; do
+                [[ -r "$f" ]] && basename "$f" .cfg
+            done
+            for f in "$MTX_EVENTS"/*/; do
+                [[ -d "$f" ]] && basename "$f" | tr '-' ':'
+            done
+        } | sort -u
+    )
+}
+
+# config_check INVENTORY FORCE: stop if the PC cannot take the install.
+config_check() {
+    local inv="$1" force="$2" name size extra disk_mb="" ram_mb="" firmware=""
+    while IFS="$INV_SEP" read -r name _ _ _ size extra; do
+        case "$name" in
+            Disk) if [[ -z "$disk_mb" ]]; then disk_mb="$size"; fi ;;
+            RAM)  ram_mb="$size" ;;
+            OS)   firmware="$(inv_extra firmware "$extra" || true)" ;;
+        esac
+    done < <(inv_rows "$inv" hardware)
+    if [[ "$firmware" == legacy || "$firmware" == bios ]]; then
+        mtx_log "WARNING: this PC boots in legacy BIOS mode. MigraTux network boot only supports UEFI."
+    fi
+    if [[ "$disk_mb" =~ ^[0-9]+$ ]] && (( disk_mb < MIN_DISK_MB )); then
+        if [[ "$force" -eq 1 ]]; then
+            mtx_log "WARNING: disk has only $disk_mb MB (minimum $MIN_DISK_MB MB), continuing because of --force"
+        else
+            mtx_die "config check: disk has only $disk_mb MB, Ubuntu needs $MIN_DISK_MB MB. Nothing was started. (--force to ignore)"
+        fi
+    fi
+    if [[ "$ram_mb" =~ ^[0-9]+$ ]] && (( ram_mb < MIN_RAM_MB )); then
+        mtx_log "WARNING: PC has $ram_mb MB RAM. The network installer loads a 3 GB ISO into RAM and needs about $MIN_RAM_MB MB. The install may fail."
+    fi
+}
+
+cmd_start() {
+    local target="" image=1 new_image=0 force=0 arg dir host inv mac mode
+    local -a macs
+    for arg in "$@"; do
+        case "$arg" in
+            --no-image) image=0 ;;
+            --new-image) new_image=1 ;;
+            --force)    force=1 ;;
+            -*)         usage ;;
+            *)          [[ -z "$target" ]] || usage; target="$arg" ;;
+        esac
+    done
+    [[ -n "$target" ]] || usage
+
+    if mac="$(mac_normalize "$target")"; then
+        job_write "$mac" install ""
+        mtx_log "start: $mac installs Ubuntu at its next network boot (no inventory, no disk image)"
+        return 0
+    fi
+
+    dir="$(mtx_host_dir "$target")" || mtx_die "no client folder '$target' in $MTX_SHARE. Run the inventory and the backup on the Windows PC first."
+    host="$(basename "$dir")"
+    inv="$(mtx_host_inventory "$dir")" || mtx_die "$host has no inventory CSV in $dir"
+    if [[ ! -s "$dir/manifest.sha256" ]]; then
+        if [[ $force -eq 1 ]]; then
+            mtx_log "WARNING: $host has no finished backup (manifest.sha256), continuing because of --force"
+        else
+            mtx_die "$host has no finished backup (manifest.sha256 missing). Refusing to wipe the PC. (--force to ignore)"
+        fi
+    fi
+    config_check "$inv" "$force"
+    mapfile -t macs < <(mtx_host_macs "$dir")
+    [[ ${#macs[@]} -gt 0 ]] || mtx_die "$host: no MAC address in the inventory. Use 'migratux assign $host MAC'."
+
+    mode=migrate
+    [[ $new_image -eq 0 ]] || mode=migrate-new
+    [[ $image -eq 1 ]] || mode=install
+    for mac in "${macs[@]}"; do
+        job_write "$mac" "$mode" "$host"
+    done
+    if [[ $image -eq 1 && $new_image -eq 0 && -n "$(image_info "$host" ext)" ]]; then
+        mtx_log "start: $host (${macs[*]}) installs Ubuntu at its next network boot. The disk image from $(image_info "$host" date) is KEPT (--new-image replaces it)"
+    elif [[ $image -eq 1 ]]; then
+        mtx_log "start: $host (${macs[*]}) saves a disk image and installs Ubuntu at its next network boot"
+    else
+        mtx_log "start: $host (${macs[*]}) installs Ubuntu at its next network boot, WITHOUT disk image (no rollback)"
+    fi
+    echo "Jetzt den PC neu starten und vom Netzwerk booten (PXE)."
+}
+
+cmd_rollback() {
+    local target="" verify=1 arg dir host ext img want got mac
+    local -a macs
+    for arg in "$@"; do
+        case "$arg" in
+            --no-verify) verify=0 ;;
+            -*)          usage ;;
+            *)           [[ -z "$target" ]] || usage; target="$arg" ;;
+        esac
+    done
+    [[ -n "$target" ]] || usage
+    dir="$(mtx_host_dir "$target")" || mtx_die "no client folder '$target' in $MTX_SHARE"
+    host="$(basename "$dir")"
+    ext="$(image_info "$host" ext)"
+    [[ -n "$ext" ]] || mtx_die "$host has no finished disk image ($MTX_IMAGES/$host/disk.info missing). Rollback is not possible."
+    img="$MTX_IMAGES/$host/disk.img.$ext"
+    [[ -s "$img" ]] || mtx_die "$img is missing or empty"
+    if [[ $verify -eq 1 ]]; then
+        mtx_log "rollback: checking the disk image of $host (can take a few minutes)"
+        want="$(image_info "$host" sha256)"
+        got="$(sha256sum "$img" | cut -d' ' -f1)"
+        [[ "$want" == "$got" ]] || mtx_die "disk image of $host is damaged (checksum differs). Rollback not started."
+    fi
+    mapfile -t macs < <(mtx_host_macs "$dir")
+    [[ ${#macs[@]} -gt 0 ]] || mtx_die "$host: no MAC address known. Use 'migratux assign $host MAC'."
+    for mac in "${macs[@]}"; do
+        job_write "$mac" restore "$host"
+    done
+    mtx_log "rollback: $host (${macs[*]}) writes its disk image back at the next network boot"
+    echo "Jetzt den PC neu starten und vom Netzwerk booten (PXE). Danach startet wieder Windows."
+}
+
+cmd_stop() {
+    local target="${1:-}" mac dir n=0
+    local -a macs
+    [[ -n "$target" ]] || usage
+    if mac="$(mac_normalize "$target")"; then
+        macs=("$mac")
+    else
+        dir="$(mtx_host_dir "$target")" || mtx_die "no client folder '$target' in $MTX_SHARE"
+        mapfile -t macs < <(mtx_host_macs "$dir")
+    fi
+    for mac in "${macs[@]}"; do
+        if [[ -e "$MTX_HOSTS/$mac.cfg" ]]; then
+            rm -f "$MTX_HOSTS/$mac.cfg"
+            n=$((n + 1))
+        fi
+    done
+    mtx_log "stop: $target, $n PXE job(s) removed"
+}
+
+cmd_assign() {
+    local host="${1:-}" mac dir
+    [[ -n "$host" && -n "${2:-}" ]] || usage
+    mac="$(mac_normalize "$2")" || mtx_die "'$2' is not a MAC address"
+    dir="$(mtx_host_dir "$host")" || mtx_die "no client folder '$host' in $MTX_SHARE"
+    mkdir -p "$MTX_ASSIGN"
+    basename "$dir" > "$MTX_ASSIGN/${mac//:/-}"
+    mtx_log "assign: $mac now counts as $(basename "$dir")"
+}
+
+cmd_unassign() {
+    local host="${1:-}" dir f n=0
+    [[ -n "$host" ]] || usage
+    dir="$(mtx_host_dir "$host")" || mtx_die "no client folder '$host' in $MTX_SHARE"
+    for f in "$MTX_ASSIGN"/*; do
+        [[ -f "$f" ]] || continue
+        if [[ "$(tr -d '\r\n' < "$f")" == "$(basename "$dir")" ]]; then
+            rm -f "$MTX_HOSTS/$(basename "$f" | tr '-' ':').cfg" "$f"
+            n=$((n + 1))
+        fi
+    done
+    mtx_log "unassign: $(basename "$dir"), $n assignment(s) removed"
+}
+
+main() {
+    local cmd="${1:-}"
+    [[ -n "$cmd" ]] || usage
+    shift
+    case "$cmd" in
+        -h|--help|help) usage ;;
+    esac
+    mtx_load_env
+    mkdir -p "$MTX_DATA/log"
+    MTX_LOG_FILE="$MTX_DATA/log/migratux.log"
+    case "$cmd" in
+        status)   cmd_status "$@" ;;
+        start)    cmd_start "$@" ;;
+        rollback) cmd_rollback "$@" ;;
+        stop)     cmd_stop "$@" ;;
+        assign)   cmd_assign "$@" ;;
+        unassign) cmd_unassign "$@" ;;
+        *)        usage ;;
+    esac
+}
+
+main "$@"

@@ -1,0 +1,28 @@
+# Rendered by server/setup.sh. Do not edit the copy in data/conf.
+[global]
+    server role = standalone server
+    workgroup = WORKGROUP
+    server string = MigraTux
+    security = user
+    map to guest = never
+    server min protocol = SMB2
+    smb ports = 445
+    disable netbios = yes
+    load printers = no
+    printing = bsd
+    printcap name = /dev/null
+    disable spoolss = yes
+    log level = 1
+    unix charset = UTF-8
+
+[@SHARE_NAME@]
+    path = /srv/share
+    comment = MigraTux client data
+    valid users = @SMB_USER@
+    read only = no
+    browseable = yes
+    # Everything is owned by root, like the files written by the HTTP server.
+    force user = root
+    force group = root
+    create mask = 0644
+    directory mask = 0755
