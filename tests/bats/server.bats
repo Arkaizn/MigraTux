@@ -27,6 +27,23 @@ setup() {
     [ -s "$DATA/log/setup.log" ]
 }
 
+@test "setup repairs config files that docker compose created as empty folders" {
+    mkdir -p "$DATA/conf/dnsmasq.conf" "$DATA/conf/smb.conf"
+    run "$SETUP" --no-build
+    [ "$status" -eq 0 ]
+    [ -f "$DATA/conf/dnsmasq.conf" ]
+    [ -f "$DATA/conf/smb.conf" ]
+    [[ "$output" == *"removed the empty folder"* ]]
+}
+
+@test "setup stops clearly when a config file is a folder with content" {
+    mkdir -p "$DATA/conf/smb.conf"
+    touch "$DATA/conf/smb.conf/x"
+    run "$SETUP" --no-build
+    [ "$status" -eq 1 ]
+    [[ "$output" == *"is a folder, not a file"* ]]
+}
+
 @test "dnsmasq accepts the rendered config and it is proxy-DHCP only" {
     "$SETUP" --no-build
     run dnsmasq --test --conf-file="$DATA/conf/dnsmasq.conf"

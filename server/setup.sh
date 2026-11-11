@@ -56,6 +56,15 @@ fi
 [[ "$ADMIN_PASSWORD_HASH" == \$6\$* ]] || mtx_die "could not hash ADMIN_PASSWORD"
 export ADMIN_PASSWORD_HASH
 
+# "docker compose up" before a finished setup creates the missing config
+# files as empty folders. Remove them, or the files cannot be written.
+for f in "$MTX_CONF/dnsmasq.conf" "$MTX_CONF/smb.conf"; do
+    if [[ -d "$f" ]]; then
+        rmdir "$f" 2>/dev/null || mtx_die "$f is a folder, not a file. Run 'docker compose down', delete this folder and run setup.sh again."
+        mtx_log "setup: removed the empty folder $f (docker compose was started before setup was done)"
+    fi
+done
+
 mtx_log "setup: rendering config"
 mtx_render "$here/templates/dnsmasq.conf.tmpl" > "$MTX_CONF/dnsmasq.conf"
 mtx_render "$here/templates/smb.conf.tmpl" > "$MTX_CONF/smb.conf"

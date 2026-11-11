@@ -58,6 +58,7 @@ All VMs on VMware NAT (VMnet8).
 
 ## If it fails
 - `setup.sh`: "SERVER_IP … is not an IPv4 address" or "is empty": fix `server/.env`.
+- `setup.sh`: "dnsmasq.conf: Is a directory", or `docker compose up` says "Are you trying to mount a directory onto a file": `docker compose up` was started before `setup.sh` had finished. Fix: `docker compose down`, `git pull`, `./setup.sh`, `docker compose up -d`.
 - The IP in step 1 is not the `SERVER_IP` in `server/.env`: put the new IP in `.env`, run `./setup.sh` and `docker compose up -d` again, and take the snapshot `server-clean` again.
 - `mtx-pxe` shows "No DHCP offers" or goes straight to "no boot device": is `PXE_INTERFACE` right? Are both VMs on NAT? Does `docker compose logs pxe` show anything when the VM starts? If the log stays empty, the server does not see the client.
 - The PXE log shows the request, but the VM does not load `bootx64.efi`: send the log. This is the part that could not be tested without VMs (proxy-DHCP with VMware's own DHCP server).
