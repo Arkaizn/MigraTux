@@ -10,7 +10,7 @@ The idea: a technician starts MigraTux, and each PC is migrated with as little m
 4. **Reconfigure**: on first boot, Linux reads the CSV, installs the Linux alternatives for the Windows apps and restores the data.
 5. **Rollback**: a disk image taken before the wipe can bring Windows back.
 
-Status: prototype. All parts (M1–M7) are written and pass the automatic tests, but **none has been tested on real VMs yet**. Plain-language overview: [docs/progress.md](docs/progress.md).
+Status: prototype. All parts (M1–M7) are written and pass the automatic tests, but **none has been tested on real VMs yet**. Plain-language overview: [docs/progress.md](docs/progress.md). Test lab setup (three VMs): [docs/lab-setup.md](docs/lab-setup.md).
 
 ## How a migration runs
 

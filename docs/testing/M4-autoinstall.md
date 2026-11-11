@@ -14,12 +14,17 @@ An empty PC becomes an Ubuntu 24.04 desktop with no input: network boot, install
 
 | VM | Needed | Snapshot to restore first | Notes |
 |---|---|---|---|
-| `mtx-server` | ☑ | the state after M3 (stack running) | needs internet |
+| `mtx-server` | ☑ | `server-clean` | needs internet |
 | `mtx-win` | ☐ | – | |
-| `mtx-pxe` (empty VM, network boot first) | ☑ | `pxe-empty` | UEFI, **8 GB RAM**, 40 GB disk, needs internet |
+| `mtx-pxe` (empty VM) | ☑ | `pxe-empty` | UEFI, **8 GB RAM**, 40 GB disk, needs internet |
 
 ## Before you start
-- M3 passed. On `mtx-server`: `cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d`.
+- Lab set up as in [lab-setup.md](../lab-setup.md). Go back to the snapshots in the table above (**VM → Snapshot → Revert**).
+- Start `mtx-server` and get the newest code (nothing is downloaded again):
+  ```bash
+  cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d
+  docker compose ps          # samba, pxe, http: all "running"
+  ```
 - The MAC address of `mtx-pxe`: VM > Settings > Network Adapter > Advanced > MAC Address.
 
 ## Steps
@@ -38,7 +43,7 @@ An empty PC becomes an Ubuntu 24.04 desktop with no input: network boot, install
    - boot menu, entry "MigraTux: install (startet automatisch)" is chosen after 5 s
    - "lade Installer": the 3.9 GB ISO is loaded into RAM (a few minutes, little output)
    - the Ubuntu installer runs by itself (text screen)
-   - the VM reboots, the boot menu appears again and now chooses "Von der Festplatte starten"
+   - the VM reboots and starts from the disk (if the MigraTux boot menu appears again, it chooses "Von der Festplatte starten")
    - a MigraTux text screen appears for a moment and reports "Kein Inventar für diesen PC". **That is expected in this test**: the PC has no Windows inventory.
    - the graphical login screen
 5. Stop the stopwatch at the login screen. Log in as `mtxadmin` with `ADMIN_PASSWORD` from `server/.env`.

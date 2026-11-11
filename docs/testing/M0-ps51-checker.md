@@ -19,11 +19,11 @@ Prove that `collect/Test-InventoryCsv.ps1` and its Pester tests also work on **W
 | `mtx-pxe` | ☐ | – | |
 
 ## Before you start
-- Copy the repo to `C:\migratux` (git clone, or copy the folder). Write down the commit: `git log -1 --oneline`.
-- Use **Windows PowerShell** (blue icon, `powershell.exe`), **not** `pwsh`.
+- Lab set up as in [lab-setup.md](../lab-setup.md). Go back to the snapshot `win-clean`.
+- On `mtx-win`: get the newest code into `C:\migratux` (the PowerShell block in [lab-setup.md](../lab-setup.md), part 3). Use **Windows PowerShell** (blue icon), not `pwsh`.
 
 ## Steps
-1. Restore `win-clean` and open Windows PowerShell.
+1. Open Windows PowerShell.
 2. Check the version (must show `5.1.x` and `Desktop`):
    ```powershell
    $PSVersionTable.PSVersion; $PSVersionTable.PSEdition

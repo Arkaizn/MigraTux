@@ -16,15 +16,29 @@ This test uses the Windows VM itself as the PC that is migrated (the real path, 
 
 | VM | Needed | Snapshot to restore first | Notes |
 |---|---|---|---|
-| `mtx-server` | ☑ | the state after M3 (stack running) | free disk space: at least the **used** size of the Windows disk (check with `df -h ~/MigraTux/server/data`) |
+| `mtx-server` | ☑ | `server-clean` | free disk space: at least the **used** size of the Windows disk (check with `df -h ~/MigraTux/server/data`) |
 | `mtx-win` | ☑ | `win-clean`, then see below | UEFI, set RAM to **8 GB** for this test |
 | `mtx-pxe` | ☐ | – | |
 
 ## Before you start
-- M2 and M4 passed. On `mtx-server`: `cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d`.
-- On `mtx-win`: put a file `ROLLBACK-TEST.txt` with today's date on the Desktop. Run inventory + backup (run A of `M2-backup.md`). Shut Windows down **completely**: `shutdown /s /t 0` in PowerShell.
+- Lab set up as in [lab-setup.md](../lab-setup.md). Go back to the snapshots in the table above (**VM → Snapshot → Revert**).
+- Start `mtx-server` and get the newest code (nothing is downloaded again):
+  ```bash
+  cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d
+  docker compose ps          # samba, pxe, http: all "running"
+  ```
+- On `mtx-win`: get the newest code into `C:\migratux` (the PowerShell block in [lab-setup.md](../lab-setup.md), part 3). Use **Windows PowerShell** (blue icon), not `pwsh`.
+- On `mtx-win`: put a file `ROLLBACK-TEST.txt` with today's date on the Desktop. Then run inventory + backup in Windows PowerShell (replace `192.168.80.130` with your server IP) and note the computer name `<HOST>` (`hostname`):
+  ```powershell
+  Set-ExecutionPolicy -Scope Process Bypass
+  cd C:\migratux
+  .\collect\Get-Inventory.ps1 -OutDir C:\migratux\out
+  .\collect\Backup-ToServer.ps1 -InventoryPath C:\migratux\out\inventory-$env:COMPUTERNAME.csv `
+      -Destination \\192.168.80.130\migratux -User migratux -Password ChangeMe-Lab1
+  echo "exit code: $LASTEXITCODE"
+  ```
+- Shut Windows down **completely**: `shutdown /s /t 0` in PowerShell.
 - VM settings of `mtx-win`: 8 GB RAM. Take a VMware snapshot `win-before-m6` (safety net if the rollback itself fails).
-- If you used `migratux assign` in M5: `./migratux unassign <HOST>`.
 
 ## Steps
 1. On `mtx-server`:
@@ -34,7 +48,7 @@ This test uses the Windows VM itself as the PC that is migrated (the real path, 
    ./migratux status <HOST>         # PXE-Job: migrate
    watch -n 10 ./migratux status <HOST>
    ```
-2. Start `mtx-win` **from the network**: VM > Power > Power On to Firmware > "EFI Network" (or put network boot first in the boot order).
+2. Start `mtx-win` **from the network**. Windows is on the disk, so this VM does not do it by itself: VM > Power > Power On to Firmware > "EFI Network".
 3. Wait while the status shows `image: Disk-Abbild von … wird gesichert`. Note how long it takes. Then the status changes to `image-done` and `install`.
 4. **Break it on purpose:** about 3 minutes after `install` appeared (the installer is now writing to the disk), power the VM off hard: VM > Power > Power Off.
 5. Prove that it is broken: power the VM on normally (from disk). Windows does not start. Take a screenshot. Power off.

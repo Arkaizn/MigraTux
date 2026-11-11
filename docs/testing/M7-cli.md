@@ -14,12 +14,28 @@ A technician controls a migration with one command on the server (`migratux stat
 
 | VM | Needed | Snapshot to restore first | Notes |
 |---|---|---|---|
-| `mtx-server` | ☑ | the state after M2 (one client folder with backup) | |
-| `mtx-win` | ☐ | – | only if you combine it with M6 |
+| `mtx-server` | ☑ | `server-clean` | |
+| `mtx-win` | ☑ | `win-clean` | for one inventory + backup |
 | `mtx-pxe` | ☐ | – | only if you combine it with M5 |
 
 ## Before you start
-- M2 passed: `./migratux status` lists your Windows PC `<HOST>` with a backup.
+- Lab set up as in [lab-setup.md](../lab-setup.md). Go back to the snapshots in the table above (**VM → Snapshot → Revert**).
+- Start `mtx-server` and get the newest code (nothing is downloaded again):
+  ```bash
+  cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d
+  docker compose ps          # samba, pxe, http: all "running"
+  ```
+- On `mtx-win`: get the newest code into `C:\migratux` (the PowerShell block in [lab-setup.md](../lab-setup.md), part 3). Use **Windows PowerShell** (blue icon), not `pwsh`.
+- On `mtx-win`, Windows PowerShell: one inventory + backup, so the server knows one PC (replace `192.168.80.130` with your server IP):
+  ```powershell
+  Set-ExecutionPolicy -Scope Process Bypass
+  cd C:\migratux
+  .\collect\Get-Inventory.ps1 -OutDir C:\migratux\out
+  .\collect\Backup-ToServer.ps1 -InventoryPath C:\migratux\out\inventory-$env:COMPUTERNAME.csv `
+      -Destination \\192.168.80.130\migratux -User migratux -Password ChangeMe-Lab1
+  echo "exit code: $LASTEXITCODE"
+  ```
+- On `mtx-server`: `./migratux status` now lists your Windows PC `<HOST>` with a backup.
 
 ## Steps
 Part 1, on `mtx-server` in `~/MigraTux/server`. No PC is booted in this part.
@@ -50,7 +66,7 @@ Part 1, on `mtx-server` in `~/MigraTux/server`. No PC is booted in this part.
 Part 2, during the M5 run (client `mtx-pxe`):
 5. Keep `watch -n 10 ./migratux status` open on the server and note each step text with the time.
 6. On the client, photograph the info screen three times: at the start, during "Programme installieren", and the final screen. Compare the remaining time on the first photo with the real duration.
-7. After the login, follow the "next steps" from the screen: turn network boot off in the VM firmware, reboot, the PC starts from disk without the boot menu.
+7. After the login, reboot the PC: it starts from the disk into Ubuntu, and nothing is installed again.
 
 Part 3, during the M6 run: note the status texts for `image`, `install`, `restore`, `restored`.
 
@@ -62,7 +78,7 @@ Part 3, during the M6 run: note the status texts for `image`, `install`, `restor
 - [ ] Step 5: the status followed the client step by step, with a remaining time during the first boot.
 - [ ] Step 6: the screen is readable (umlauts correct), shows `[x]` for done steps and `[>]` for the current one, and the remaining time goes down. First estimate ____ min, real ____ min.
 - [ ] Step 6: the final screen names the next steps (network boot off, login name, start password, report).
-- [ ] Step 7: with network boot off the PC boots straight into Ubuntu.
+- [ ] Step 7: the PC boots straight into Ubuntu.
 
 ## If it fails
 - `./migratux`: "server/.env not found": run it from `~/MigraTux/server` after `cp .env.example .env`.

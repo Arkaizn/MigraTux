@@ -14,13 +14,18 @@
 
 | VM | Needed | Snapshot to restore first | Notes |
 |---|---|---|---|
-| `mtx-server` | ☑ | the state after M3 (stack running) | |
+| `mtx-server` | ☑ | `server-clean` | |
 | `mtx-win` (Windows 10/11 client) | ☑ | `win-clean` | |
 | `mtx-pxe` | ☐ | – | |
 
 ## Before you start
-- M3 passed and the stack runs: `cd ~/MigraTux/server && docker compose ps`.
-- Repo in `C:\migratux` on `mtx-win`. Write down `git log -1 --oneline` on both VMs.
+- Lab set up as in [lab-setup.md](../lab-setup.md). Go back to the snapshots in the table above (**VM → Snapshot → Revert**).
+- Start `mtx-server` and get the newest code (nothing is downloaded again):
+  ```bash
+  cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d
+  docker compose ps          # samba, pxe, http: all "running"
+  ```
+- On `mtx-win`: get the newest code into `C:\migratux` (the PowerShell block in [lab-setup.md](../lab-setup.md), part 3). Use **Windows PowerShell** (blue icon), not `pwsh`.
 - In the commands below replace `192.168.80.130` with your server IP and the password with `SMB_PASSWORD` from `server/.env`.
 
 ## Steps

@@ -15,13 +15,13 @@
 | VM | Needed | Snapshot to restore first | Notes |
 |---|---|---|---|
 | `mtx-server` | ☐ | – | |
-| `mtx-win` (Windows 10/11 client) | ☑ | `win-clean` | with a few apps and test files, as the VM Lab page says |
+| `mtx-win` (Windows 10/11 client) | ☑ | `win-clean` | with a few apps and test files |
 | `mtx-pxe` | ☐ | – | |
 
 ## Before you start
-- Copy the repo to `C:\migratux` on `mtx-win`. Write down `git log -1 --oneline`.
-- Write down which apps you installed on the VM (for the check in step 5) and which files are in Documents and on the Desktop.
-- Use **Windows PowerShell** (blue icon), not `pwsh`.
+- Lab set up as in [lab-setup.md](../lab-setup.md). Go back to the snapshot `win-clean`.
+- On `mtx-win`: get the newest code into `C:\migratux` (the PowerShell block in [lab-setup.md](../lab-setup.md), part 3). Use **Windows PowerShell** (blue icon), not `pwsh`.
+- Write down which apps are installed on the VM (for the check in step 4) and which files are in Documents and on the Desktop.
 
 ## Steps
 1. Open Windows PowerShell **as a normal user** (not as administrator):

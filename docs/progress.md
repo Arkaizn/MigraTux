@@ -33,8 +33,10 @@ the install or Windows really work. Only the VM tests can.
 
 ## What you can test now
 
-Every part has a step-by-step guide in `docs/testing/`. Do them in this order,
-because each one needs the one before:
+First set up the three test VMs: [lab-setup.md](lab-setup.md).
+
+Every part has a step-by-step guide in `docs/testing/`. Each guide starts from the
+clean snapshots of the lab. Do them in this order, so a problem shows up in the simplest test first:
 
 | # | Guide | What you check | VMs | Time |
 |---|---|---|---|---|

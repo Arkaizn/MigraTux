@@ -1,6 +1,6 @@
 # Mx: <title> (manual VM test)
 
-Copy this file to `docs/testing/Mx-<short-name>.md` and fill it in. One file per milestone. Lab setup: vault page *VM Lab VMware Workstation*.
+Copy this file to `docs/testing/Mx-<short-name>.md` and fill it in. One file per milestone. Lab setup: [lab-setup.md](../lab-setup.md). Every test starts from the clean snapshots, never from the state another test left behind.
 
 | | |
 |---|---|
@@ -17,9 +17,9 @@ Tick what this test uses. You never need all three.
 
 | VM | Needed | Snapshot to restore first | Notes |
 |---|---|---|---|
-| `mtx-server` (Ubuntu Server 24.04, Docker) | ☐ | `server-clean` | IP: write it down with `ip -4 addr` |
+| `mtx-server` (Ubuntu Server 24.04, Docker) | ☐ | `server-clean` (server set up, as after lab-setup part 2) | IP: write it down with `ip -4 addr` |
 | `mtx-win` (Windows 10/11 client) | ☐ | `win-clean` | `Set-ExecutionPolicy -Scope Process Bypass` before running scripts |
-| `mtx-pxe` (empty VM, network boot first) | ☐ | `pxe-empty` | |
+| `mtx-pxe` (empty VM) | ☐ | `pxe-empty` | boots from the network by itself while its disk is empty |
 
 All VMs on VMware NAT (VMnet8).
 

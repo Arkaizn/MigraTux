@@ -16,21 +16,41 @@ To keep the Windows VM, the Linux install goes to `mtx-pxe`, which the server is
 
 | VM | Needed | Snapshot to restore first | Notes |
 |---|---|---|---|
-| `mtx-server` | ☑ | the state after M3 (stack running) | needs internet |
+| `mtx-server` | ☑ | `server-clean` | needs internet |
 | `mtx-win` | ☑ | `win-clean` | for inventory + backup only |
 | `mtx-pxe` | ☑ | `pxe-empty` | UEFI, 8 GB RAM, needs internet |
 
 ## Before you start
-- M1–M4 passed. On `mtx-server`: `cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d`.
+- Lab set up as in [lab-setup.md](../lab-setup.md). Go back to the snapshots in the table above (**VM → Snapshot → Revert**).
+- Start `mtx-server` and get the newest code (nothing is downloaded again):
+  ```bash
+  cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d
+  docker compose ps          # samba, pxe, http: all "running"
+  ```
+- On `mtx-win`: get the newest code into `C:\migratux` (the PowerShell block in [lab-setup.md](../lab-setup.md), part 3). Use **Windows PowerShell** (blue icon), not `pwsh`.
+- In the commands below replace `192.168.80.130` with your server IP (`ip -4 -br addr` on the server).
 - MAC address of `mtx-pxe` (VM > Settings > Network Adapter > Advanced).
 - Good moment for the **test recording** of the timelapse (VM Lab page §5).
 
 ## Steps
-1. On `mtx-win`: do **run B of `M2-backup.md`** (2000 files with umlauts + inventory + backup). Note the Windows user name and the computer name `<HOST>`.
+1. On `mtx-win`, Windows PowerShell as a normal user: create 2000 files with umlauts, then inventory and backup. Note the Windows user name and the computer name `<HOST>` (`hostname`).
+   ```powershell
+   Set-ExecutionPolicy -Scope Process Bypass
+   cd C:\migratux
+   $dir = "$env:USERPROFILE\Documents\Aufträge Müller"
+   New-Item -ItemType Directory -Path $dir -Force | Out-Null
+   1..2000 | ForEach-Object { "Auftrag $_" | Set-Content "$dir\Auftrag_${_}_Zürich_Größe.txt" }
+   .\collect\Get-Inventory.ps1 -OutDir C:\migratux\out
+   .\collect\Backup-ToServer.ps1 -InventoryPath C:\migratux\out\inventory-$env:COMPUTERNAME.csv `
+       -Destination \\192.168.80.130\migratux -User migratux -Password ChangeMe-Lab1
+   echo "exit code: $LASTEXITCODE"
+   ```
+   The last line must be `exit code: 0`. Windows can stay on or be shut down; it is not touched again.
 2. On `mtx-server`:
    ```bash
    cd ~/MigraTux/server
    ./migratux status                                  # <HOST>: Backup ja
+   wc -l data/share/<HOST>/manifest.sha256            # number of files, needed for the check later
    ./migratux assign <HOST> 00:0C:29:12:34:56         # MAC of mtx-pxe
    ./migratux start <HOST> --no-image
    watch -n 10 ./migratux status
@@ -59,7 +79,7 @@ To keep the Windows VM, the Linux install goes to `mtx-pxe`, which the server is
 - [ ] Login with the Windows user name works and forces a password change.
 - [ ] The report lists every Windows app in exactly one section; "Installation FEHLGESCHLAGEN (0)".
 - [ ] The apps under "installiert" start.
-- [ ] The report says `Prüfung: OK, N von N Dateien`; `N` equals the manifest line count of M2; `verify.failed` is empty.
+- [ ] The report says `Prüfung: OK, N von N Dateien`; `N` equals the manifest line count from step 2; `verify.failed` is empty.
 - [ ] `find` counts 2000; file names with `ä ö ü ß` are correct.
 - [ ] `hostname` is the Windows computer name in lower case.
 - [ ] Times: power-on → login screen ____ min; of that first boot (info screen) ____ min.
