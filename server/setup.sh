@@ -37,8 +37,11 @@ mtx_log "setup: start (data in $MTX_DATA)"
 if [[ $build -eq 1 ]]; then
     command -v docker >/dev/null || mtx_die "docker is not installed"
     mtx_log "setup: building Docker images"
-    docker build -q --network host -t migratux-setup "$here/setup" >/dev/null || mtx_die "building the setup image failed"
-    (cd "$here" && docker compose build -q) || mtx_die "docker compose build failed"
+    build_log="$MTX_DATA/log/build.log"
+    docker build --network host -t migratux-setup "$here/setup" > "$build_log" 2>&1 \
+        || { tail -n 25 "$build_log" >&2; mtx_die "building the setup image failed (often no internet in the VM). Full output: $build_log"; }
+    (cd "$here" && docker compose build) >> "$build_log" 2>&1 \
+        || { tail -n 25 "$build_log" >&2; mtx_die "docker compose build failed (often no internet in the VM). Full output: $build_log"; }
 
     fetch_args=()
     [[ $skip_iso -eq 1 ]] && fetch_args+=(--skip-iso)

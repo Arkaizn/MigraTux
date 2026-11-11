@@ -6,7 +6,7 @@ set -eu
 : "${SMB_PASSWORD:?SMB_PASSWORD is not set}"
 
 if ! id "$SMB_USER" >/dev/null 2>&1; then
-    adduser -D -H -s /sbin/nologin "$SMB_USER"
+    useradd -M -s /usr/sbin/nologin "$SMB_USER"
 fi
 printf '%s\n%s\n' "$SMB_PASSWORD" "$SMB_PASSWORD" | smbpasswd -a -s "$SMB_USER" >/dev/null
 

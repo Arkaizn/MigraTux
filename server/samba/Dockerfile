@@ -1,6 +1,10 @@
 # Samba file server for the MigraTux share.
-FROM alpine:3.20
-RUN apk add --no-cache samba samba-common-tools
+# Ubuntu base like the setup image: the server then needs only one package
+# mirror (the one the host already uses), not a second one for Alpine.
+FROM ubuntu:24.04
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends samba \
+ && rm -rf /var/lib/apt/lists/*
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 EXPOSE 445
