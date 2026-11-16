@@ -59,7 +59,10 @@ setup() {
     local cfg="$DATA/tftp/grub/grub.cfg"
     grep -qx 'set default=local' "$cfg"
     grep -q 'hosts/\$net_default_mac.cfg' "$cfg"
-    grep -q 'url=http://192.168.80.10:8080/ubuntu.iso' "$cfg"
+    grep -q 'ip=dhcp netboot=nfs nfsroot=192.168.80.10:/srv/nfsroot autoinstall' "$cfg"
+    # The ISO must not be loaded into RAM again (casper url=...iso).
+    run grep -c 'ubuntu\.iso' "$cfg"
+    [ "$output" = "0" ]
     grep -q 'ds=nocloud-net;s=http://192.168.80.10:8080/autoinstall/' "$cfg"
     grep -q 'migratux.mode=\$mtx_mode migratux.host=\$mtx_host' "$cfg"
 }
@@ -184,11 +187,19 @@ setup() {
     grep -qx 'set mtx_host=' "$HOSTS/00:50:56:aa:bb:cc.cfg"
 }
 
-@test "config check: start warns about little RAM (fixture has 4 GB)" {
+@test "config check: start warns about little RAM (2 GB)" {
+    make_client_folder "$DATA/share"
+    sed -i 's/"RAM","","","","4096"/"RAM","","","","2048"/' "$DATA/share/KMU-PC01/inventory-KMU-PC01.csv"
+    run "$CLI" start KMU-PC01 --force
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"WARNING: PC has 2048 MB RAM"* ]]
+}
+
+@test "config check: 4 GB RAM is enough, no warning (fixture has 4 GB)" {
     make_client_folder "$DATA/share"
     run "$CLI" start KMU-PC01
     [ "$status" -eq 0 ]
-    [[ "$output" == *"WARNING: PC has 4096 MB RAM"* ]]
+    [[ "$output" != *"MB RAM"* ]]
 }
 
 @test "config check: start stops cleanly when the disk is too small" {

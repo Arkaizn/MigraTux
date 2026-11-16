@@ -16,7 +16,7 @@ The server stack starts. An empty PC that boots from the network reaches the Mig
 |---|---|---|---|
 | `mtx-server` (Ubuntu Server 24.04, Docker) | ☑ | `server-clean` | |
 | `mtx-win` (Windows 10/11 client) | ☑ | `win-clean` | only for step 6 |
-| `mtx-pxe` (empty VM) | ☑ | `pxe-empty` | UEFI, **8 GB RAM** |
+| `mtx-pxe` (empty VM) | ☑ | `pxe-empty` | UEFI |
 
 All VMs on VMware NAT (VMnet8).
 
@@ -25,7 +25,7 @@ All VMs on VMware NAT (VMnet8).
 - Start `mtx-server` and get the newest code (nothing is downloaded again):
   ```bash
   cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d
-  docker compose ps          # samba, pxe, http: all "running"
+  docker compose ps          # samba, pxe, nfs, http: all "running"
   ```
 
 ## Steps
@@ -49,7 +49,7 @@ All VMs on VMware NAT (VMnet8).
 8. Save the logs: `docker compose logs > ~/m3-compose.log`
 
 ## Expected result
-- [ ] Before you start: `setup.sh` ends with `setup: done`, three services are running.
+- [ ] Before you start: `setup.sh` ends with `setup: done`, four services are running (`samba`, `pxe`, `nfs`, `http`).
 - [ ] Step 1: the ISO answers with `200`.
 - [ ] Step 3: the PXE log shows lines with `PXE` and `bootx64.efi`, then `sent /srv/tftp/bootx64.efi`, `grubx64.efi` and `grub/grub.cfg`.
 - [ ] Step 4: the MigraTux menu is visible. **No install starts by itself** (there is no job for this PC).
@@ -62,8 +62,10 @@ All VMs on VMware NAT (VMnet8).
 - The IP in step 1 is not the `SERVER_IP` in `server/.env`: put the new IP in `.env`, run `./setup.sh` and `docker compose up -d` again, and take the snapshot `server-clean` again.
 - `mtx-pxe` shows "No DHCP offers" or goes straight to "no boot device": is `PXE_INTERFACE` right? Are both VMs on NAT? Does `docker compose logs pxe` show anything when the VM starts? If the log stays empty, the server does not see the client.
 - The PXE log shows the request, but the VM does not load `bootx64.efi`: send the log. This is the part that could not be tested without VMs (proxy-DHCP with VMware's own DHCP server).
-- The VM firmware must be **UEFI**. BIOS/legacy network boot is not supported.
+- `mtx-pxe` gets an IP, then shows "PXE-E76: Bad or missing multicast discovery address" and "Operating System not found": the VM firmware is BIOS. It must be **UEFI**; BIOS/legacy network boot is not supported. Fix: power the VM off, **VM → Settings → Options → Advanced → Firmware type: UEFI**, then take the snapshot `pxe-empty` again.
 - Secure Boot error: send a screenshot. The boot loader is Ubuntu's signed shim.
+- `nfs` is not "running" (it restarts again and again): `docker compose logs nfs` names the reason in a line with `ERROR:`. Most often `setup.sh` has not unpacked the ISO yet, or `SERVER_IP` / `PXE_INTERFACE` in `server/.env` do not fit the server.
+- `net use` error 86 ("Systemfehler 86"): wrong SMB user or password. The share user is `SMB_USER` from `server/.env` (default `migratux`), not `ADMIN_USER`.
 - `net use` error 53 / 67: Windows cannot reach port 445. Check `docker compose ps` and `sudo ss -ltnp | grep 445`.
 - `docker compose up` says port 445 or 8080 is in use: another service on the server uses it.
 
@@ -81,3 +83,10 @@ Problem (if any): what you saw, at which step
 Attach:
 - the log files: `~/m3-compose.log`, `server/data/log/setup.log`
 - a screenshot of: the boot menu on `mtx-pxe`; the `dir` output on `mtx-win`
+
+## Results
+Logs and screenshots are in [results/m3/](results/m3/).
+
+| Date | Result | File |
+|---|---|---|
+| 2026-11-16 | OK | [results/M3-2026-11-16.md](results/M3-2026-11-16.md) |

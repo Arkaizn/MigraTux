@@ -18,14 +18,14 @@ To keep the Windows VM, the Linux install goes to `mtx-pxe`, which the server is
 |---|---|---|---|
 | `mtx-server` | ☑ | `server-clean` | needs internet |
 | `mtx-win` | ☑ | `win-clean` | for inventory + backup only |
-| `mtx-pxe` | ☑ | `pxe-empty` | UEFI, 8 GB RAM, needs internet |
+| `mtx-pxe` | ☑ | `pxe-empty` | UEFI, 8 GB RAM (or the lowest value that worked in M4 step 9), needs internet |
 
 ## Before you start
 - Lab set up as in [lab-setup.md](../lab-setup.md). Go back to the snapshots in the table above (**VM → Snapshot → Revert**).
 - Start `mtx-server` and get the newest code (nothing is downloaded again):
   ```bash
   cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d
-  docker compose ps          # samba, pxe, http: all "running"
+  docker compose ps          # samba, pxe, nfs, http: all "running"
   ```
 - On `mtx-win`: get the newest code into `C:\migratux` (the PowerShell block in [lab-setup.md](../lab-setup.md), part 3). Use **Windows PowerShell** (blue icon), not `pwsh`.
 - In the commands below replace `192.168.80.130` with your server IP (`ip -4 -br addr` on the server).

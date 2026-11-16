@@ -81,6 +81,7 @@ run_server() {
     (cd "$root/server" && docker compose --env-file .env.example config -q)
     echo "ok   docker compose config"
     (cd "$root/server" && docker compose --env-file .env.example build -q >/dev/null 2>&1)
+    docker build -q --network host -t migratux-setup "$root/server/setup" >/dev/null
     echo "ok   images built"
 
     # Render the config like setup.sh does on the server, into a temp folder.
@@ -92,6 +93,40 @@ run_server() {
     docker run --rm --network none -v "$tmp/data/conf/smb.conf:/etc/samba/smb.conf:ro" \
         --entrypoint testparm migratux-samba -s /etc/samba/smb.conf >/dev/null 2>&1
     echo "ok   Samba accepts smb.conf"
+
+    # setup/fetch.sh with a tiny stand-in ISO: kernel, initrd and the NFS root
+    # are unpacked; a second run keeps them; a broken NFS root is redone.
+    mkdir -p "$tmp/iso/casper" "$tmp/iso/.disk" "$tmp/fetch"
+    echo kernel > "$tmp/iso/casper/vmlinuz"
+    echo initrd > "$tmp/iso/casper/initrd"
+    echo layer > "$tmp/iso/casper/ubuntu-server-minimal.squashfs"
+    echo uuid > "$tmp/iso/.disk/casper-uuid-generic"
+    chmod 555 "$tmp/iso/casper"
+    local fetch=(docker run --rm --network none --user "$(id -u):$(id -g)" -e ISO_URL=file:///src/test.iso
+                 -v "$tmp:/src:ro" -v "$tmp/fetch:/data" migratux-setup)
+    docker run --rm --network none --user "$(id -u):$(id -g)" -v "$tmp:/work" --entrypoint bsdtar migratux-setup \
+        -cf /work/test.iso --format=iso9660 -C /work/iso .
+    chmod 755 "$tmp/iso/casper"
+    "${fetch[@]}" > "$tmp/fetch1.log" 2>&1
+    grep -q 'NFS root: unpacking' "$tmp/fetch1.log"
+    [[ "$(cat "$tmp/fetch/nfsroot/casper/ubuntu-server-minimal.squashfs")" == layer ]]
+    [[ -s "$tmp/fetch/nfsroot/.disk/casper-uuid-generic" && -s "$tmp/fetch/tftp/initrd" ]]
+    "${fetch[@]}" > "$tmp/fetch2.log" 2>&1
+    grep -q 'NFS root: already unpacked' "$tmp/fetch2.log"
+    rm -f "$tmp/fetch/nfsroot.url"
+    echo old > "$tmp/fetch/nfsroot/casper/leftover"
+    "${fetch[@]}" > "$tmp/fetch3.log" 2>&1
+    grep -q 'NFS root: unpacking' "$tmp/fetch3.log"
+    [[ ! -e "$tmp/fetch/nfsroot/casper/leftover" && -s "$tmp/fetch/nfsroot.url" ]]
+    echo "ok   fetch.sh unpacks the ISO into nfsroot, keeps it on the next run, redoes a broken one"
+
+    # The NFS container must refuse to start without an unpacked ISO.
+    if docker run --rm --network none -e SERVER_IP=192.168.0.10 -e PXE_INTERFACE=lo migratux-nfs > "$tmp/nfs.log" 2>&1; then
+        echo "FAILED: the nfs container started without an unpacked ISO" >&2
+        return 1
+    fi
+    grep -q 'holds no unpacked Ubuntu ISO' "$tmp/nfs.log"
+    echo "ok   nfs container stops clearly without an unpacked ISO"
 
     # HTTP server without network: requests are made inside the container.
     echo job > "$tmp/data/tftp/grub/hosts/00:0c:29:ab:cd:ef.cfg"

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Runs inside the setup image (server/setup/Dockerfile), started by server/setup.sh.
-# Fills /data/tftp (boot loader, kernel, initrd) and /data/http (ISO).
+# Fills /data/tftp (boot loader, kernel, initrd), /data/http (ISO) and
+# /data/nfsroot (the unpacked ISO, exported over NFS to the installer).
 #
 # Usage: fetch.sh [--skip-iso]
 # Env:   ISO_URL (optional). Empty = newest 24.04 live-server ISO.
@@ -34,7 +35,7 @@ fi
 if [[ -f "$iso" && -f "$iso.url" && "$(cat "$iso.url")" == "$url" ]]; then
     echo "ISO: already downloaded ($url)"
 else
-    echo "ISO: downloading $url (about 3 GB)"
+    echo "ISO: downloading $url (about 4 GB)"
     curl -fL --retry 5 -C - -o "$iso.part" "$url"
     if [[ -n "$sum" ]]; then
         echo "ISO: checking SHA-256"
@@ -51,4 +52,26 @@ bsdtar -xf "$iso" -C "$tmp" casper/vmlinuz casper/initrd
 cp "$tmp/casper/vmlinuz" "$tmp/casper/initrd" /data/tftp/
 rm -rf "$tmp"
 chmod 644 /data/tftp/vmlinuz /data/tftp/initrd /data/tftp/*.efi "$iso"
-echo "done: $(du -h "$iso" | cut -f1) ISO, kernel and initrd in /data/tftp"
+
+# The installer mounts the unpacked ISO over NFS (netboot=nfs). Kernel, initrd
+# and this folder must come from the same ISO: the initrd checks the ID in
+# .disk/casper-uuid-*. The marker is written last, so a broken run is redone.
+nfsroot=/data/nfsroot
+marker=/data/nfsroot.url
+if [[ -f "$marker" && "$(cat "$marker")" == "$url" ]] && compgen -G "$nfsroot/casper/*.squashfs" >/dev/null; then
+    echo "NFS root: already unpacked"
+else
+    echo "NFS root: unpacking the ISO into $nfsroot (needs as much space as the ISO)"
+    rm -f "$marker"
+    mkdir -p "$nfsroot"
+    # The folder itself stays (a running nfs container has it mounted). The
+    # ISO has read-only folders: make them writable before deleting.
+    chmod -R u+w "$nfsroot"
+    find "$nfsroot" -mindepth 1 -delete
+    bsdtar -xf "$iso" -C "$nfsroot"
+    chmod -R u+w,a+rX "$nfsroot"
+    compgen -G "$nfsroot/casper/*.squashfs" >/dev/null \
+        || { echo "ERROR: $iso has no casper/*.squashfs. Is it an Ubuntu live-server ISO?" >&2; exit 1; }
+    echo "$url" > "$marker"
+fi
+echo "done: $(du -h "$iso" | cut -f1) ISO, kernel and initrd in /data/tftp, unpacked ISO in $nfsroot"

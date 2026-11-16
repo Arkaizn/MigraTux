@@ -16,13 +16,15 @@ if [ -n "$net_default_mac" ]; then
     fi
 fi
 
-set mtx_args="ip=dhcp url=http://@SERVER_IP@:@HTTP_PORT@/ubuntu.iso autoinstall ds=nocloud-net;s=http://@SERVER_IP@:@HTTP_PORT@/autoinstall/"
+# netboot=nfs: the installer mounts the unpacked ISO from the server (service
+# "nfs") instead of loading the whole ISO into RAM.
+set mtx_args="ip=dhcp netboot=nfs nfsroot=@SERVER_IP@:/srv/nfsroot autoinstall ds=nocloud-net;s=http://@SERVER_IP@:@HTTP_PORT@/autoinstall/"
 
 if [ -n "$mtx_mode" ]; then
     set default=job
     set timeout=5
     menuentry "MigraTux: $mtx_mode $mtx_host (startet automatisch)" --id job {
-        echo "MigraTux: lade Installer (ca. 3 GB, bitte warten) ..."
+        echo "MigraTux: lade Installer (bitte warten) ..."
         linux /vmlinuz $mtx_args migratux.mode=$mtx_mode migratux.host=$mtx_host ---
         initrd /initrd
     }
@@ -33,7 +35,7 @@ menuentry "Von der Festplatte starten" --id local {
 }
 
 menuentry "Manuell: Ubuntu installieren - LOESCHT DIE FESTPLATTE, ohne Backup" --id manual {
-    echo "MigraTux: lade Installer (ca. 3 GB, bitte warten) ..."
+    echo "MigraTux: lade Installer (bitte warten) ..."
     linux /vmlinuz $mtx_args migratux.mode=install ---
     initrd /initrd
 }

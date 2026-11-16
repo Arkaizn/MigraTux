@@ -23,7 +23,7 @@
 - Start `mtx-server` and get the newest code (nothing is downloaded again):
   ```bash
   cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d
-  docker compose ps          # samba, pxe, http: all "running"
+  docker compose ps          # samba, pxe, nfs, http: all "running"
   ```
 - On `mtx-win`: get the newest code into `C:\migratux` (the PowerShell block in [lab-setup.md](../lab-setup.md), part 3). Use **Windows PowerShell** (blue icon), not `pwsh`.
 - In the commands below replace `192.168.80.130` with your server IP and the password with `SMB_PASSWORD` from `server/.env`.

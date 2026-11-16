@@ -34,6 +34,8 @@ UTF-8 **without** BOM, LF line ends, one line per file.
 | `<DATA>/images/<HOST>/disk.img.zst` (or `.gz`) | `install/mtx-early.sh` (HTTP PUT) | the same script in restore mode | compressed copy of the whole disk |
 | `<DATA>/images/<HOST>/disk.info` | `mtx-early.sh`, **last** | `migratux`, `mtx-early.sh` | `key=value` lines: `host`, `disk`, `size_bytes`, `ext`, `sha256` (of the compressed file), `mac`, `date`. **If this file exists, the image is complete.** |
 | `<DATA>/events/<mac-with-hyphens>/<step>` | the client (HTTP PUT) | `migratux status` | one line of text per step; the file time is the time of the event |
+| `<DATA>/nfsroot/` | `setup.sh` | the Ubuntu installer on the client (NFS, read-only) | the unpacked Ubuntu ISO. Exported as `SERVER_IP:/srv/nfsroot`. Must come from the same ISO as `<DATA>/tftp/vmlinuz` and `initrd`. |
+| `<DATA>/nfsroot.url` | `setup.sh`, **last** | `setup.sh` | the URL of the ISO that was unpacked. **If this file is missing or names another ISO, the ISO is unpacked again.** |
 | `<DATA>/log/` | `setup.sh`, `migratux` | people | `setup.log`, `migratux.log` |
 
 ## PXE job modes
@@ -51,9 +53,16 @@ A client without a job boots from its disk.
 
 | URL | Methods | For |
 |---|---|---|
-| `/ubuntu.iso`, `/autoinstall/`, `/files/` | GET | installer, `user-data`, `migratux-client.tar.gz`, `client.env` |
+| `/autoinstall/`, `/files/` | GET | `user-data`, `migratux-client.tar.gz`, `client.env` |
+| `/ubuntu.iso` | GET | the downloaded ISO. Not used by clients any more: the installer mounts the unpacked ISO over NFS. |
 | `/pxe/hosts/<mac>.cfg` | GET, DELETE | a client removes its own job |
 | `/events/<mac>/<step>` | GET, PUT | status |
 | `/images/<HOST>/<file>` | GET, PUT | disk images |
 
 No login and no TLS: lab prototype.
+
+## NFS (ports 111, 2049, 20048)
+
+| Export | Access | For |
+|---|---|---|
+| `SERVER_IP:/srv/nfsroot` = `<DATA>/nfsroot` | read-only, NFSv3, only the client subnet (`NFS_CLIENTS`) | the Ubuntu installer mounts it at boot (`netboot=nfs nfsroot=…` in `grub.cfg`) |

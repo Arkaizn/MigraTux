@@ -35,7 +35,27 @@ services:
       - ${DATA_DIR}/conf/dnsmasq.conf:/etc/dnsmasq.conf:ro
       - ${DATA_DIR}/tftp:/srv/tftp:ro
 
-  # HTTP: ISO, autoinstall files, client scripts; receives status events and
+  # NFS: the unpacked Ubuntu ISO, read-only. The network installer mounts it
+  # instead of loading the whole ISO into RAM. The NFS server is part of the
+  # host kernel: the container only steers it, so it needs the host network,
+  # privileged mode and the kernel modules of the host.
+  # Ports on the host: 111 (rpcbind), 2049 (nfs), 20048 (mountd).
+  nfs:
+    build:
+      context: ./nfs
+      network: host
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
+    environment:
+      SERVER_IP: ${SERVER_IP}
+      PXE_INTERFACE: ${PXE_INTERFACE}
+      NFS_CLIENTS: ${NFS_CLIENTS:-}
+    volumes:
+      - ${DATA_DIR}/nfsroot:/srv/nfsroot:ro
+      - /lib/modules:/lib/modules:ro
+
+  # HTTP: autoinstall files, client scripts; receives status events and
   # disk images (PUT); lets a client switch off its own PXE job (DELETE).
   http:
     image: nginx:1.27-alpine

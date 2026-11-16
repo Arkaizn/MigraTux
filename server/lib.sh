@@ -51,12 +51,13 @@ mtx_load_env() {
     MTX_SHARE="$MTX_DATA/share"
     MTX_TFTP="$MTX_DATA/tftp"
     MTX_HTTP="$MTX_DATA/http"
+    MTX_NFSROOT="$MTX_DATA/nfsroot"
     MTX_CONF="$MTX_DATA/conf"
     MTX_IMAGES="$MTX_DATA/images"
     MTX_EVENTS="$MTX_DATA/events"
     MTX_HOSTS="$MTX_TFTP/grub/hosts"
     MTX_ASSIGN="$MTX_SHARE/_assign"
-    export MTX_DATA MTX_SHARE MTX_TFTP MTX_HTTP MTX_CONF MTX_IMAGES MTX_EVENTS MTX_HOSTS MTX_ASSIGN
+    export MTX_DATA MTX_SHARE MTX_TFTP MTX_HTTP MTX_NFSROOT MTX_CONF MTX_IMAGES MTX_EVENTS MTX_HOSTS MTX_ASSIGN
 }
 
 # mtx_render TEMPLATE: print the template with every @KEY@ replaced by the

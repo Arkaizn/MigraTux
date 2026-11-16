@@ -23,7 +23,8 @@ here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$here/lib.sh"
 
 MIN_DISK_MB=25000
-MIN_RAM_MB=6000
+# Estimate for the installer with the ISO mounted over NFS. To be measured (M4).
+MIN_RAM_MB=3000
 
 usage() {
     sed -n '2,18p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
@@ -169,7 +170,7 @@ config_check() {
         fi
     fi
     if [[ "$ram_mb" =~ ^[0-9]+$ ]] && (( ram_mb < MIN_RAM_MB )); then
-        mtx_log "WARNING: PC has $ram_mb MB RAM. The network installer loads a 3 GB ISO into RAM and needs about $MIN_RAM_MB MB. The install may fail."
+        mtx_log "WARNING: PC has $ram_mb MB RAM. The network installer needs about $MIN_RAM_MB MB (estimate). The install may fail."
     fi
 }
 

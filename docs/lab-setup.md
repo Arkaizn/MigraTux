@@ -6,7 +6,7 @@ You have three zip files. Each one is a VM for VMware Workstation.
 |---|---|---|
 | `mtx-server` | the MigraTux server (Ubuntu Server with Docker) | 4 GB |
 | Windows Client | the Windows 10 PC that gets migrated | 4 GB |
-| `mtx-client-pxe` | an empty PC; Linux gets installed on it | **8 GB** |
+| `mtx-client-pxe` | an empty PC; Linux gets installed on it | **8 GB** (4 GB should be enough, not measured yet) |
 
 The test guides call the Windows Client `mtx-win` and the empty PC `mtx-pxe`.
 
@@ -20,6 +20,7 @@ Your computer needs 16 GB RAM, 150 GB free disk space and internet.
 4. Open the settings of each VM and check:
    - Network Adapter is **NAT** (all three)
    - `mtx-client-pxe` has **8 GB** memory
+   - `mtx-client-pxe` has firmware type **UEFI** (**VM → Settings → Options → Advanced → Firmware type**). With BIOS the network boot ends with "Operating System not found". If you see that message, check this setting first.
 5. Take a snapshot of `mtx-client-pxe` (**VM → Snapshot → Take Snapshot**) and name it `pxe-empty`.
 
 ## 2. Set up the server
@@ -43,7 +44,7 @@ Start `mtx-server`, log in and type these commands.
    nano .env
    ```
    Change `SERVER_IP=` and `PXE_INTERFACE=` to your two values. Save with Ctrl+O, Enter. Close with Ctrl+X.
-4. Run the setup (downloads 3.9 GB, takes a while):
+4. Run the setup (downloads 3.9 GB and unpacks it, takes a while; needs 8 GB free disk space):
    ```bash
    ./setup.sh
    ```
@@ -53,7 +54,7 @@ Start `mtx-server`, log in and type these commands.
    docker compose up -d
    docker compose ps
    ```
-   `samba`, `pxe` and `http` must all say "running".
+   `samba`, `pxe`, `nfs` and `http` must all say "running".
 6. Shut the VM down (`sudo poweroff`), take a snapshot and name it `server-clean`.
 
 ## 3. Set up Windows

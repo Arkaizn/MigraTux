@@ -7,7 +7,7 @@ Milestones M3 (stack), M6 (disk images) and M7 (`migratux` command). Runs on `mt
 ```bash
 cd server
 cp .env.example .env      # set SERVER_IP and PXE_INTERFACE (ip -4 -br addr)
-./setup.sh                # builds images, downloads the Ubuntu ISO (3.9 GB), renders the config
+./setup.sh                # builds images, downloads the Ubuntu ISO (3.9 GB) and unpacks it, renders the config
 docker compose up -d
 ./migratux status
 ```
@@ -20,7 +20,8 @@ Run `./setup.sh` again after every `git pull` or change of `.env`: it keeps the 
 |---|---|---|
 | `samba` | share `\\SERVER_IP\migratux`, one folder per client | port 445 |
 | `pxe` | dnsmasq: proxy-DHCP (boot info only, the router keeps handing out IPs) + TFTP. UEFI clients only. | host network |
-| `http` | nginx: ISO, autoinstall files, client scripts; receives status events and disk images | `HTTP_PORT` (8080) |
+| `nfs` | NFS server: the unpacked Ubuntu ISO (`data/nfsroot`), read-only. The network installer mounts it, so the ISO is not loaded into the client's RAM. Runs privileged: the NFS server is part of the host kernel. | host network, ports 111, 2049, 20048 |
+| `http` | nginx: autoinstall files, client scripts; receives status events and disk images | `HTTP_PORT` (8080) |
 
 ## The `migratux` command
 
@@ -44,8 +45,8 @@ A PC installs **only** when it has a job (`start`/`rollback`). Without a job, a 
 | `setup.sh` | one-time and repeatable setup |
 | `migratux` | control command |
 | `lib.sh` | shared shell functions |
-| `docker-compose.yml`, `samba/`, `pxe/`, `http/nginx.conf` | the stack |
-| `setup/` | helper image: signed UEFI boot loader, ISO download |
+| `docker-compose.yml`, `samba/`, `pxe/`, `nfs/`, `http/nginx.conf` | the stack |
+| `setup/` | helper image: signed UEFI boot loader, ISO download, unpacking the ISO for NFS |
 | `templates/` | config templates, `@KEY@` is replaced by the value from `.env` |
 | `data/` | downloads, share, images, logs (not in git). Layout: [docs/contracts/server-layout.md](../docs/contracts/server-layout.md) |
 

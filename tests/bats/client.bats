@@ -30,7 +30,7 @@ setup() {
 }
 
 cmdline() {
-    echo "BOOT_IMAGE=/vmlinuz ip=dhcp url=http://192.168.80.10:8080/ubuntu.iso autoinstall $* ---" > "$MTX_CMDLINE_FILE"
+    echo "BOOT_IMAGE=/vmlinuz ip=dhcp netboot=nfs nfsroot=192.168.80.10:/srv/nfsroot autoinstall $* ---" > "$MTX_CMDLINE_FILE"
 }
 
 # ---- lib/client.sh ----

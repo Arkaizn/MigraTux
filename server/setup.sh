@@ -4,6 +4,7 @@
 #
 #   1. builds the Docker images
 #   2. downloads the UEFI boot loader and the Ubuntu 24.04 ISO, extracts kernel + initrd
+#      and unpacks the ISO into <DATA_DIR>/nfsroot (the installer mounts it over NFS)
 #   3. renders dnsmasq, Samba, GRUB and autoinstall config from server/.env
 #   4. packs the client scripts (install/, reconfigure/, mapping/, lib/)
 #
@@ -30,7 +31,7 @@ done
 
 mtx_load_env
 mkdir -p "$MTX_DATA/log" "$MTX_SHARE" "$MTX_ASSIGN" "$MTX_TFTP/grub" "$MTX_HOSTS" "$MTX_HTTP/autoinstall" \
-         "$MTX_HTTP/files" "$MTX_CONF" "$MTX_IMAGES" "$MTX_EVENTS"
+         "$MTX_HTTP/files" "$MTX_CONF" "$MTX_IMAGES" "$MTX_EVENTS" "$MTX_NFSROOT"
 MTX_LOG_FILE="$MTX_DATA/log/setup.log"
 mtx_log "setup: start (data in $MTX_DATA)"
 
@@ -42,6 +43,9 @@ if [[ $build -eq 1 ]]; then
         || { tail -n 25 "$build_log" >&2; mtx_die "building the setup image failed (often no internet in the VM). Full output: $build_log"; }
     (cd "$here" && docker compose build) >> "$build_log" 2>&1 \
         || { tail -n 25 "$build_log" >&2; mtx_die "docker compose build failed (often no internet in the VM). Full output: $build_log"; }
+
+    # "docker compose up" before the first setup creates this folder as root.
+    [[ -w "$MTX_NFSROOT" ]] || mtx_die "$MTX_NFSROOT is not writable for $(id -un). Run 'docker compose down', then: sudo chown -R $(id -un) $MTX_NFSROOT"
 
     fetch_args=()
     [[ $skip_iso -eq 1 ]] && fetch_args+=(--skip-iso)
@@ -85,6 +89,8 @@ missing=()
 for f in "$MTX_TFTP/bootx64.efi" "$MTX_TFTP/grubx64.efi" "$MTX_TFTP/vmlinuz" "$MTX_TFTP/initrd" "$MTX_HTTP/ubuntu.iso"; do
     [[ -s "$f" ]] || missing+=("${f#"$MTX_DATA"/}")
 done
+# The installer needs the unpacked ISO (casper/*.squashfs) from the NFS export.
+compgen -G "$MTX_NFSROOT/casper/*.squashfs" >/dev/null || missing+=("nfsroot/casper/*.squashfs")
 if [[ ${#missing[@]} -gt 0 ]]; then
     mtx_log "setup: WARNING, PXE boot will not work yet. Missing: ${missing[*]}"
 fi
@@ -93,8 +99,8 @@ mtx_log "setup: done"
 cat <<EOF
 
 Next:
-  cd $here && docker compose up -d      # start Samba, PXE and HTTP
-  docker compose ps                     # all three must be "running"
+  cd $here && docker compose up -d      # start Samba, PXE, NFS and HTTP
+  docker compose ps                     # all four must be "running"
   ./migratux status                     # list clients and jobs
 Windows share: \\\\$SERVER_IP\\$SHARE_NAME   (user $SMB_USER)
 EOF

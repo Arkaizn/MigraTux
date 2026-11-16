@@ -23,7 +23,7 @@ A technician controls a migration with one command on the server (`migratux stat
 - Start `mtx-server` and get the newest code (nothing is downloaded again):
   ```bash
   cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d
-  docker compose ps          # samba, pxe, http: all "running"
+  docker compose ps          # samba, pxe, nfs, http: all "running"
   ```
 - On `mtx-win`: get the newest code into `C:\migratux` (the PowerShell block in [lab-setup.md](../lab-setup.md), part 3). Use **Windows PowerShell** (blue icon), not `pwsh`.
 - On `mtx-win`, Windows PowerShell: one inventory + backup, so the server knows one PC (replace `192.168.80.130` with your server IP):
@@ -73,7 +73,7 @@ Part 3, during the M6 run: note the status texts for `image`, `install`, `restor
 ## Expected result
 - [ ] Step 1: `help` lists `status`, `start`, `rollback`, `stop`, `assign`, `unassign`. `status` shows per PC: inventory, MAC, backup, disk image, PXE job, last step.
 - [ ] Step 2: all three refuse with a clear `ERROR:` line and `exit: 1`. No file appears in `data/tftp/grub/hosts/`.
-- [ ] Step 3: `start` sets the job, `stop` removes it; if the PC has under 6 GB RAM, `start` prints a warning.
+- [ ] Step 3: `start` sets the job, `stop` removes it; if the PC has under 3 GB RAM, `start` prints a warning.
 - [ ] Step 4: every command is in the log with date and time.
 - [ ] Step 5: the status followed the client step by step, with a remaining time during the first boot.
 - [ ] Step 6: the screen is readable (umlauts correct), shows `[x]` for done steps and `[>]` for the current one, and the remaining time goes down. First estimate ____ min, real ____ min.

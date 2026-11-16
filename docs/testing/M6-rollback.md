@@ -17,7 +17,7 @@ This test uses the Windows VM itself as the PC that is migrated (the real path, 
 | VM | Needed | Snapshot to restore first | Notes |
 |---|---|---|---|
 | `mtx-server` | ☑ | `server-clean` | free disk space: at least the **used** size of the Windows disk (check with `df -h ~/MigraTux/server/data`) |
-| `mtx-win` | ☑ | `win-clean`, then see below | UEFI, set RAM to **8 GB** for this test |
+| `mtx-win` | ☑ | `win-clean`, then see below | UEFI, set RAM to **8 GB** for this test (4 GB should be enough since the installer is read over NFS; not measured yet) |
 | `mtx-pxe` | ☐ | – | |
 
 ## Before you start
@@ -25,7 +25,7 @@ This test uses the Windows VM itself as the PC that is migrated (the real path, 
 - Start `mtx-server` and get the newest code (nothing is downloaded again):
   ```bash
   cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d
-  docker compose ps          # samba, pxe, http: all "running"
+  docker compose ps          # samba, pxe, nfs, http: all "running"
   ```
 - On `mtx-win`: get the newest code into `C:\migratux` (the PowerShell block in [lab-setup.md](../lab-setup.md), part 3). Use **Windows PowerShell** (blue icon), not `pwsh`.
 - On `mtx-win`: put a file `ROLLBACK-TEST.txt` with today's date on the Desktop. Then run inventory + backup in Windows PowerShell (replace `192.168.80.130` with your server IP) and note the computer name `<HOST>` (`hostname`):
