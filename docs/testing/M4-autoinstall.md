@@ -102,3 +102,4 @@ Logs and screenshots are in [results/m4/](results/m4/).
 | Date | Result | File |
 |---|---|---|
 | 2026-11-16 | FAILED (the ISO did not fit into RAM; led to the switch to NFS) | [results/M4-2026-11-16.md](results/M4-2026-11-16.md) |
+| 2026-11-17 | OK in run 3 (NFS netboot; needs internet; e1000 hang fixed with vmxnet3) | [results/M4-2026-11-17.md](results/M4-2026-11-17.md) |

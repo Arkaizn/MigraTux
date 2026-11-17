@@ -1,0 +1,5 @@
+Noch keine Clients in /home/mtxadmin/MigraTux/server/data/share (zuerst Inventar + Backup auf dem Windows-PC).
+00:0c:29:f2:2f:4d (ohne Inventar)
+  PXE-Job:      keiner
+  Letzter Stand: firstboot: Erster Start: MigraTux richtet den PC ein (vor 4min)
+

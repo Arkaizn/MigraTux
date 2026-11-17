@@ -1,0 +1,245 @@
+samba-1  | tdbsam_open: Converting version 0.0 database to version 4.0.
+samba-1  | tdbsam_convert_backup: updated /var/lib/samba/private/passdb.tdb file.
+samba-1  | Load smb config files from /etc/samba/smb.conf
+samba-1  | Loaded services file OK.
+samba-1  | Weak crypto is allowed by GnuTLS (e.g. NTLM as a compatibility fallback)
+samba-1  | 
+samba-1  | Server role: ROLE_STANDALONE
+samba-1  | 
+samba-1  | smbd version 4.19.5-Ubuntu started.
+samba-1  | Copyright Andrew Tridgell and the Samba Team 1992-2023
+samba-1  | INFO: Profiling turned OFF from pid 1
+samba-1  | Load smb config files from /etc/samba/smb.conf
+samba-1  | Loaded services file OK.
+samba-1  | Weak crypto is allowed by GnuTLS (e.g. NTLM as a compatibility fallback)
+samba-1  | 
+samba-1  | Server role: ROLE_STANDALONE
+samba-1  | 
+samba-1  | smbd version 4.19.5-Ubuntu started.
+samba-1  | Copyright Andrew Tridgell and the Samba Team 1992-2023
+samba-1  | INFO: Profiling turned OFF from pid 1
+samba-1  | Load smb config files from /etc/samba/smb.conf
+samba-1  | Loaded services file OK.
+samba-1  | Weak crypto is allowed by GnuTLS (e.g. NTLM as a compatibility fallback)
+samba-1  | 
+samba-1  | Server role: ROLE_STANDALONE
+samba-1  | 
+samba-1  | smbd version 4.19.5-Ubuntu started.
+samba-1  | Copyright Andrew Tridgell and the Samba Team 1992-2023
+samba-1  | INFO: Profiling turned OFF from pid 1
+samba-1  | Load smb config files from /etc/samba/smb.conf
+samba-1  | Loaded services file OK.
+samba-1  | Weak crypto is allowed by GnuTLS (e.g. NTLM as a compatibility fallback)
+samba-1  | 
+samba-1  | Server role: ROLE_STANDALONE
+samba-1  | 
+samba-1  | smbd version 4.19.5-Ubuntu started.
+samba-1  | Copyright Andrew Tridgell and the Samba Team 1992-2023
+samba-1  | INFO: Profiling turned OFF from pid 1
+samba-1  | parse_dfs_path_strict: Hostname 192.168.117.136 is not ours.
+samba-1  | idmap range not specified for domain '*'
+pxe-1    | dnsmasq[1]: started, version 2.91 DNS disabled
+http-1   | /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+http-1   | /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+http-1   | /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+http-1   | 10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
+http-1   | 10-listen-on-ipv6-by-default.sh: info: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf
+http-1   | /docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+http-1   | /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+http-1   | /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+http-1   | /docker-entrypoint.sh: Configuration complete; ready for start up
+http-1   | 172.18.0.1 - - [16/Nov/2026:21:09:22 +0000] "HEAD /ubuntu.iso HTTP/1.1" 200 0 "-" "curl/8.18.0"
+http-1   | /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+http-1   | /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+http-1   | /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+http-1   | 10-listen-on-ipv6-by-default.sh: info: IPv6 listen already enabled
+http-1   | /docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+http-1   | /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+http-1   | /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+http-1   | /docker-entrypoint.sh: Configuration complete; ready for start up
+http-1   | /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+http-1   | /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+http-1   | /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+http-1   | 10-listen-on-ipv6-by-default.sh: info: IPv6 listen already enabled
+http-1   | /docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+http-1   | /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+http-1   | /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+http-1   | /docker-entrypoint.sh: Configuration complete; ready for start up
+http-1   | /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+http-1   | /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+http-1   | /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+http-1   | 10-listen-on-ipv6-by-default.sh: info: IPv6 listen already enabled
+http-1   | /docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+http-1   | /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+http-1   | /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+http-1   | /docker-entrypoint.sh: Configuration complete; ready for start up
+http-1   | /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+http-1   | /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+http-1   | /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+http-1   | 10-listen-on-ipv6-by-default.sh: info: IPv6 listen already enabled
+http-1   | /docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+http-1   | /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+http-1   | /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+http-1   | /docker-entrypoint.sh: Configuration complete; ready for start up
+http-1   | 192.168.117.137 - - [17/Nov/2026:16:58:28 +0000] "GET /autoinstall/meta-data HTTP/1.1" 200 0 "-" "Cloud-Init/26.1-0ubuntu1~24.04.1"
+http-1   | 192.168.117.137 - - [17/Nov/2026:16:58:28 +0000] "GET /autoinstall/user-data HTTP/1.1" 200 1723 "-" "Cloud-Init/26.1-0ubuntu1~24.04.1"
+http-1   | 192.168.117.137 - - [17/Nov/2026:16:58:28 +0000] "GET /autoinstall/vendor-data HTTP/1.1" 200 0 "-" "Cloud-Init/26.1-0ubuntu1~24.04.1"
+http-1   | 192.168.117.137 - - [17/Nov/2026:16:59:01 +0000] "GET /files/migratux-client.tar.gz HTTP/1.1" 200 16671 "-" "curl/8.5.0"
+http-1   | 192.168.117.137 - - [17/Nov/2026:16:59:01 +0000] "GET /files/client.env HTTP/1.1" 200 292 "-" "curl/8.5.0"
+http-1   | 192.168.117.137 - - [17/Nov/2026:16:59:01 +0000] "PUT /events/00-0c-29-f2-2f-4d/install HTTP/1.1" 201 25 "-" "curl/8.5.0"
+http-1   | 192.168.117.137 - - [17/Nov/2026:17:06:17 +0000] "GET /autoinstall/meta-data HTTP/1.1" 200 0 "-" "Cloud-Init/26.1-0ubuntu1~24.04.1"
+http-1   | 192.168.117.137 - - [17/Nov/2026:17:06:17 +0000] "GET /autoinstall/user-data HTTP/1.1" 200 1723 "-" "Cloud-Init/26.1-0ubuntu1~24.04.1"
+http-1   | 192.168.117.137 - - [17/Nov/2026:17:06:17 +0000] "GET /autoinstall/vendor-data HTTP/1.1" 200 0 "-" "Cloud-Init/26.1-0ubuntu1~24.04.1"
+http-1   | 192.168.117.137 - - [17/Nov/2026:17:06:30 +0000] "GET /files/migratux-client.tar.gz HTTP/1.1" 200 16671 "-" "curl/8.5.0"
+http-1   | 192.168.117.137 - - [17/Nov/2026:17:06:30 +0000] "GET /files/client.env HTTP/1.1" 200 292 "-" "curl/8.5.0"
+http-1   | 192.168.117.137 - - [17/Nov/2026:17:06:30 +0000] "PUT /events/00-0c-29-f2-2f-4d/install HTTP/1.1" 204 25 "-" "curl/8.5.0"
+http-1   | 192.168.117.137 - - [17/Nov/2026:17:14:30 +0000] "PUT /events/00-0c-29-f2-2f-4d/installed HTTP/1.1" 201 25 "-" "curl/8.5.0"
+http-1   | 192.168.117.137 - - [17/Nov/2026:17:14:30 +0000] "DELETE /pxe/hosts/00:0c:29:f2:2f:4d.cfg HTTP/1.1" 204 0 "-" "curl/8.5.0"
+http-1   | 2026/11/17 17:14:30 [error] 23#23: *15 lstat() "/srv/pxe-hosts/00:0c:29:f2:2f:57.cfg" failed (2: No such file or directory), client: 192.168.117.137, server: , request: "DELETE /pxe/hosts/00:0c:29:f2:2f:57.cfg HTTP/1.1", host: "192.168.117.136:8080"
+http-1   | 192.168.117.137 - - [17/Nov/2026:17:14:30 +0000] "DELETE /pxe/hosts/00:0c:29:f2:2f:57.cfg HTTP/1.1" 404 153 "-" "curl/8.5.0"
+http-1   | 192.168.117.138 - - [17/Nov/2026:17:16:47 +0000] "PUT /events/00-0c-29-f2-2f-4d/firstboot HTTP/1.1" 201 25 "-" "curl/8.5.0"
+http-1   | 192.168.117.138 - - [17/Nov/2026:17:16:47 +0000] "GET /files/migratux-client.tar.gz HTTP/1.1" 200 16671 "-" "curl/8.5.0"
+http-1   | 192.168.117.138 - - [17/Nov/2026:17:16:47 +0000] "PUT /events/00-0c-29-f2-2f-4d/connect HTTP/1.1" 201 25 "-" "curl/8.5.0"
+http-1   | 192.168.117.138 - - [17/Nov/2026:17:16:47 +0000] "PUT /events/00-0c-29-f2-2f-4d/failed HTTP/1.1" 201 25 "-" "curl/8.5.0"
+nfs-1    | rpc.mountd: Version 2.6.4 starting
+nfs-1    | NFS: exporting /srv/nfsroot 192.168.117.0/24(ro,all_squash,no_subtree_check,insecure,fsid=17)
+pxe-1    | dnsmasq[1]: compile time options: IPv6 GNU-getopt DBus no-UBus i18n IDN2 DHCP DHCPv6 no-Lua TFTP conntrack ipset nftset auth DNSSEC loop-detect inotify dumpfile
+pxe-1    | dnsmasq-dhcp[1]: DHCP, proxy on subnet 192.168.117.136
+pxe-1    | dnsmasq-tftp[1]: TFTP root is /srv/tftp  
+pxe-1    | dnsmasq[1]: exiting on receipt of SIGTERM
+pxe-1    | dnsmasq[1]: started, version 2.91 DNS disabled
+pxe-1    | dnsmasq[1]: compile time options: IPv6 GNU-getopt DBus no-UBus i18n IDN2 DHCP DHCPv6 no-Lua TFTP conntrack ipset nftset auth DNSSEC loop-detect inotify dumpfile
+pxe-1    | dnsmasq-dhcp[1]: DHCP, proxy on subnet 192.168.117.136
+pxe-1    | dnsmasq-tftp[1]: TFTP root is /srv/tftp  
+pxe-1    | dnsmasq-dhcp[1]: 3309684000 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 3309684000 vendor class: PXEClient:Arch:00007:UNDI:003016
+pxe-1    | dnsmasq-dhcp[1]: 3309684000 PXE(ens224) 00:0c:29:f2:2f:4d proxy
+pxe-1    | dnsmasq-dhcp[1]: 3309684000 tags: efi64, ens224
+pxe-1    | dnsmasq-dhcp[1]: 3309684000 next server: 192.168.117.136
+pxe-1    | dnsmasq-dhcp[1]: 3309684000 broadcast response
+pxe-1    | dnsmasq-dhcp[1]: 3309684000 sent size:  1 option: 53 message-type  2
+pxe-1    | dnsmasq-dhcp[1]: 3309684000 sent size:  4 option: 54 server-identifier  192.168.117.136
+pxe-1    | dnsmasq-dhcp[1]: 3309684000 sent size:  9 option: 60 vendor-class  50:58:45:43:6c:69:65:6e:74
+pxe-1    | dnsmasq-dhcp[1]: 3309684000 sent size: 17 option: 97 client-machine-id  00:56:4d:83:5f:5a:16:47:ef:d5:f9:aa:d3:52...
+pxe-1    | dnsmasq-dhcp[1]: 3309684000 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 3309684000 vendor class: PXEClient:Arch:00007:UNDI:003016
+pxe-1    | dnsmasq-dhcp[1]: 2563449807 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 2563449807 vendor class: PXEClient:Arch:00007:UNDI:003016
+pxe-1    | dnsmasq-dhcp[1]: 2563449807 PXE(ens224) 00:0c:29:f2:2f:4d proxy
+pxe-1    | dnsmasq-dhcp[1]: 2563449807 tags: efi64, ens224
+pxe-1    | dnsmasq-dhcp[1]: 2563449807 bootfile name: bootx64.efi
+pxe-1    | dnsmasq-dhcp[1]: 2563449807 server name: 192.168.117.136
+pxe-1    | dnsmasq-dhcp[1]: 2563449807 next server: 192.168.117.136
+pxe-1    | dnsmasq-dhcp[1]: 2563449807 sent size:  1 option: 53 message-type  5
+pxe-1    | dnsmasq-dhcp[1]: 2563449807 sent size:  4 option: 54 server-identifier  192.168.117.136
+pxe-1    | dnsmasq-dhcp[1]: 2563449807 sent size:  9 option: 60 vendor-class  50:58:45:43:6c:69:65:6e:74
+pxe-1    | dnsmasq-dhcp[1]: 2563449807 sent size: 17 option: 97 client-machine-id  00:56:4d:83:5f:5a:16:47:ef:d5:f9:aa:d3:52...
+pxe-1    | dnsmasq-tftp[1]: error 8 User aborted the transfer received from 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/bootx64.efi to 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/bootx64.efi to 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: file /srv/tftp/revocations.efi not found for 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/grubx64.efi to 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: file /srv/tftp/grub/x86_64-efi/command.lst not found for 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: file /srv/tftp/grub/x86_64-efi/fs.lst not found for 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: file /srv/tftp/grub/x86_64-efi/crypto.lst not found for 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: file /srv/tftp/grub/x86_64-efi/terminal.lst not found for 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/grub/grub.cfg to 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: error 0 closed received from 192.168.117.137
+nfs-1    | NFS: ready, clients mount 192.168.117.136:/srv/nfsroot
+nfs-1    | stopping the NFS server
+nfs-1    | rpc.mountd: Caught signal 15, un-registering and exiting.
+nfs-1    | ERROR: no subnet found for SERVER_IP 192.168.117.136 on ens224. Check both in server/.env (ip -4 -br addr), or set NFS_CLIENTS.
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/grub/hosts/00:0c:29:f2:2f:4d.cfg to 192.168.117.137
+nfs-1    | ERROR: no subnet found for SERVER_IP 192.168.117.136 on ens224. Check both in server/.env (ip -4 -br addr), or set NFS_CLIENTS.
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/grub/hosts/00:0c:29:f2:2f:4d.cfg to 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/vmlinuz to 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/initrd to 192.168.117.137
+pxe-1    | dnsmasq-dhcp[1]: 3301157501 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 3301157501 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 1194871117 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 1194871117 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 2185119301 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 2185119301 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 2685688576 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 2685688576 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 230853640 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 230853640 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 230853640 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 230853640 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 1357900042 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 1357900042 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 3933929941 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 3933929941 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 3933929941 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 3933929941 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 3807656512 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 3807656512 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 37539513 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 37539513 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 37539513 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 37539513 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 2207123678 available DHCP subnet: 192.168.117.136/255.255.255.0
+nfs-1    | rpc.mountd: Version 2.6.4 starting
+nfs-1    | NFS: exporting /srv/nfsroot 192.168.117.0/24(ro,all_squash,no_subtree_check,insecure,fsid=17)
+nfs-1    | NFS: ready, clients mount 192.168.117.136:/srv/nfsroot
+nfs-1    | rpc.mountd: authenticated mount request from 192.168.117.137:962 for /srv/nfsroot (/srv/nfsroot)
+nfs-1    | rpc.mountd: authenticated mount request from 192.168.117.137:971 for /srv/nfsroot (/srv/nfsroot)
+pxe-1    | dnsmasq-dhcp[1]: 2207123678 vendor class: PXEClient:Arch:00007:UNDI:003016
+pxe-1    | dnsmasq-dhcp[1]: 2207123678 PXE(ens224) 00:0c:29:f2:2f:4d proxy
+pxe-1    | dnsmasq-dhcp[1]: 2207123678 tags: efi64, ens224
+pxe-1    | dnsmasq-dhcp[1]: 2207123678 next server: 192.168.117.136
+pxe-1    | dnsmasq-dhcp[1]: 2207123678 broadcast response
+pxe-1    | dnsmasq-dhcp[1]: 2207123678 sent size:  1 option: 53 message-type  2
+pxe-1    | dnsmasq-dhcp[1]: 2207123678 sent size:  4 option: 54 server-identifier  192.168.117.136
+pxe-1    | dnsmasq-dhcp[1]: 2207123678 sent size:  9 option: 60 vendor-class  50:58:45:43:6c:69:65:6e:74
+pxe-1    | dnsmasq-dhcp[1]: 2207123678 sent size: 17 option: 97 client-machine-id  00:56:4d:83:5f:5a:16:47:ef:d5:f9:aa:d3:52...
+pxe-1    | dnsmasq-dhcp[1]: 2207123678 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 2207123678 vendor class: PXEClient:Arch:00007:UNDI:003016
+pxe-1    | dnsmasq-dhcp[1]: 1460889485 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 1460889485 vendor class: PXEClient:Arch:00007:UNDI:003016
+pxe-1    | dnsmasq-dhcp[1]: 1460889485 PXE(ens224) 00:0c:29:f2:2f:4d proxy
+pxe-1    | dnsmasq-dhcp[1]: 1460889485 tags: efi64, ens224
+pxe-1    | dnsmasq-dhcp[1]: 1460889485 bootfile name: bootx64.efi
+pxe-1    | dnsmasq-dhcp[1]: 1460889485 server name: 192.168.117.136
+pxe-1    | dnsmasq-dhcp[1]: 1460889485 next server: 192.168.117.136
+pxe-1    | dnsmasq-dhcp[1]: 1460889485 sent size:  1 option: 53 message-type  5
+pxe-1    | dnsmasq-dhcp[1]: 1460889485 sent size:  4 option: 54 server-identifier  192.168.117.136
+pxe-1    | dnsmasq-dhcp[1]: 1460889485 sent size:  9 option: 60 vendor-class  50:58:45:43:6c:69:65:6e:74
+pxe-1    | dnsmasq-dhcp[1]: 1460889485 sent size: 17 option: 97 client-machine-id  00:56:4d:83:5f:5a:16:47:ef:d5:f9:aa:d3:52...
+pxe-1    | dnsmasq-tftp[1]: error 8 User aborted the transfer received from 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/bootx64.efi to 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/bootx64.efi to 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: file /srv/tftp/revocations.efi not found for 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/grubx64.efi to 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: file /srv/tftp/grub/x86_64-efi/command.lst not found for 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: file /srv/tftp/grub/x86_64-efi/fs.lst not found for 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: file /srv/tftp/grub/x86_64-efi/crypto.lst not found for 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: file /srv/tftp/grub/x86_64-efi/terminal.lst not found for 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/grub/grub.cfg to 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: error 0 closed received from 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/grub/hosts/00:0c:29:f2:2f:4d.cfg to 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/grub/hosts/00:0c:29:f2:2f:4d.cfg to 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/vmlinuz to 192.168.117.137
+pxe-1    | dnsmasq-tftp[1]: sent /srv/tftp/initrd to 192.168.117.137
+pxe-1    | dnsmasq-dhcp[1]: 3185902019 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 3185902019 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 2278861957 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 2278861957 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 48894636 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 48894636 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 4233436372 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 4233436372 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 2554429821 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 2554429821 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 2554429821 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 2554429821 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 1114873709 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 1114873709 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 2638963930 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 2638963930 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 2638963930 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 2638963930 client provides name: ubuntu-server
+pxe-1    | dnsmasq-dhcp[1]: 1410730730 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 1410730730 client provides name: migratux-client
+pxe-1    | dnsmasq-dhcp[1]: 1410730730 available DHCP subnet: 192.168.117.136/255.255.255.0
+pxe-1    | dnsmasq-dhcp[1]: 1410730730 client provides name: migratux-client
