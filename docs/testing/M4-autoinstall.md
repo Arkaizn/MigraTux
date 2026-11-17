@@ -16,7 +16,7 @@ An empty PC becomes an Ubuntu 24.04 desktop with no input: network boot, install
 |---|---|---|---|
 | `mtx-server` | ☑ | `server-clean` | needs internet |
 | `mtx-win` | ☐ | – | |
-| `mtx-pxe` (empty VM) | ☑ | `pxe-empty` | UEFI, 8 GB RAM (4 GB should be enough, see step 9), 40 GB disk, needs internet |
+| `mtx-pxe` (empty VM) | ☑ | `pxe-empty` | UEFI, 8 GB RAM (4 GB also works but is slower, see step 9 and the 2026-11-17 result), 40 GB disk, needs internet |
 
 ## Before you start
 - Lab set up as in [lab-setup.md](../lab-setup.md). Go back to the snapshots in the table above (**VM → Snapshot → Revert**).
@@ -102,4 +102,4 @@ Logs and screenshots are in [results/m4/](results/m4/).
 | Date | Result | File |
 |---|---|---|
 | 2026-11-16 | FAILED (the ISO did not fit into RAM; led to the switch to NFS) | [results/M4-2026-11-16.md](results/M4-2026-11-16.md) |
-| 2026-11-17 | OK in run 3 (NFS netboot; needs internet; e1000 hang fixed with vmxnet3) | [results/M4-2026-11-17.md](results/M4-2026-11-17.md) |
+| 2026-11-17 | OK in runs 3 and 4 (NFS netboot; needs internet; e1000 hang fixed with vmxnet3; works with 4 GB RAM) | [results/M4-2026-11-17.md](results/M4-2026-11-17.md) |

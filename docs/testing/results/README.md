@@ -28,4 +28,4 @@ Results of the manual VM tests, next to the guides in [`docs/testing/`](../).
 |---|---|---|---|
 | M3 | 2026-11-16 | OK | [M3-2026-11-16.md](M3-2026-11-16.md) |
 | M4 | 2026-11-16 | FAILED (the ISO did not fit into RAM; led to the switch to NFS) | [M4-2026-11-16.md](M4-2026-11-16.md) |
-| M4 | 2026-11-17 | OK in run 3 (NFS netboot; needs internet; e1000 hang fixed with vmxnet3) | [M4-2026-11-17.md](M4-2026-11-17.md) |
+| M4 | 2026-11-17 | OK in runs 3 and 4 (NFS netboot; needs internet; e1000 hang fixed with vmxnet3; works with 4 GB RAM) | [M4-2026-11-17.md](M4-2026-11-17.md) |

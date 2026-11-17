@@ -6,7 +6,7 @@ You have three zip files. Each one is a VM for VMware Workstation.
 |---|---|---|
 | `mtx-server` | the MigraTux server (Ubuntu Server with Docker) | 4 GB |
 | Windows Client | the Windows 10 PC that gets migrated | 4 GB |
-| `mtx-client-pxe` | an empty PC; Linux gets installed on it | **8 GB** (4 GB should be enough, not measured yet) |
+| `mtx-client-pxe` | an empty PC; Linux gets installed on it | **8 GB** (4 GB also works, tested in M4 on 2026-11-17, but slower) |
 
 The test guides call the Windows Client `mtx-win` and the empty PC `mtx-pxe`.
 

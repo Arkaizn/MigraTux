@@ -17,7 +17,7 @@ This test uses the Windows VM itself as the PC that is migrated (the real path, 
 | VM | Needed | Snapshot to restore first | Notes |
 |---|---|---|---|
 | `mtx-server` | ☑ | `server-clean` | free disk space: at least the **used** size of the Windows disk (check with `df -h ~/MigraTux/server/data`) |
-| `mtx-win` | ☑ | `win-clean`, then see below | UEFI, set RAM to **8 GB** for this test (4 GB should be enough since the installer is read over NFS; not measured yet) |
+| `mtx-win` | ☑ | `win-clean`, then see below | UEFI, set RAM to **8 GB** for this test (4 GB also works since the installer is read over NFS: tested in M4 on 2026-11-17, slower) |
 | `mtx-pxe` | ☐ | – | |
 
 ## Before you start

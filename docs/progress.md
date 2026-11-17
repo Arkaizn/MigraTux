@@ -62,7 +62,7 @@ Each guide ends with "What to send back". Paste that to Claude; failures become 
 
 ## Good to know
 
-- The installer is no longer loaded into the RAM of the PC: the PC reads it from the server over NFS. About 4 GB RAM should be enough (estimate, not measured yet). The test VM `mtx-pxe` stays at 8 GB until this is measured.
+- The installer is no longer loaded into the RAM of the PC: the PC reads it from the server over NFS. The install works with 4 GB RAM (tested in M4 on 2026-11-17, about 15-17 min, slower boot than with 8 GB). The test VM `mtx-pxe` stays at 8 GB.
 - Network boot works with **UEFI** only, not old BIOS mode.
 - A PC is only installed after `./migratux start <PC-NAME>` on the server. It never installs by itself.
 - Passwords in `server/.env` are for the lab only (no encryption yet).
