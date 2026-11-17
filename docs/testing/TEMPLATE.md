@@ -25,6 +25,7 @@ All VMs on VMware NAT (VMnet8).
 
 ## Before you start
 - Repo version to use: branch/commit `<...>` (`git log -1 --oneline` on the VM or the copy you used).
+- Get the code the same way in every guide: copy the `mtx-server` and/or `mtx-win` block from "Before you start" in [M2-backup.md](M2-backup.md).
 - Files to copy onto the VM, and where to.
 
 ## Steps
@@ -35,14 +36,14 @@ All VMs on VMware NAT (VMnet8).
 Write the exact command for each step, e.g.
 
 ```powershell
-cd C:\migratux
-.\collect\Get-Inventory.ps1 -OutDir C:\migratux\out
+cd C:\Migratux
+.\collect\Get-Inventory.ps1 -OutDir C:\Migratux\out
 ```
 
 ## Expected result
 Concrete and checkable, e.g.:
 - [ ] Command ends with exit code 0 and no red error text.
-- [ ] `C:\migratux\out\inventory-<HOSTNAME>.csv` exists.
+- [ ] `C:\Migratux\out\inventory-<HOSTNAME>.csv` exists.
 - [ ] `.\collect\Test-InventoryCsv.ps1 -Path <file>` shows `Valid : True`.
 - [ ] These apps appear: …
 

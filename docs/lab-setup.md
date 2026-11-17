@@ -27,10 +27,16 @@ Your computer needs 16 GB RAM, 150 GB free disk space and internet.
 
 Start `mtx-server`, log in and type these commands.
 
-1. Get the newest code:
+1. Get the code into `~/MigraTux` (`git pull` if the repo is already there, otherwise clone it into the empty folder; the `.` at the end avoids a nested `MigraTux/MigraTux`):
    ```bash
-   cd ~/MigraTux
-   git pull
+   mkdir -p ~/MigraTux && cd ~/MigraTux
+   if [ -d .git ]; then git pull; else git clone https://github.com/Arkaizn/MigraTux.git .; fi
+   ```
+   If `git clone` says "already exists and is not an empty directory", `~/MigraTux` holds something that is not the repo. Move it away, run the block again, then take your settings and the downloaded files over:
+   ```bash
+   cd ~ && (cd MigraTux/server 2>/dev/null && docker compose down); mv ~/MigraTux ~/MigraTux-old
+   # run the block above again, then:
+   mv ~/MigraTux-old/server/.env ~/MigraTux-old/server/data ~/MigraTux/server/ 2>/dev/null
    ```
 2. Look up the server's network name and IP address:
    ```bash
@@ -43,7 +49,7 @@ Start `mtx-server`, log in and type these commands.
    cp .env.example .env
    nano .env
    ```
-   Change `SERVER_IP=` and `PXE_INTERFACE=` to your two values. Save with Ctrl+O, Enter. Close with Ctrl+X.
+   Skip the `cp` line if you took `.env` over in step 1. Change `SERVER_IP=` and `PXE_INTERFACE=` to your two values. Save with Ctrl+O, Enter. Close with Ctrl+X.
 4. Run the setup (downloads 3.9 GB and unpacks it, takes a while; needs 8 GB free disk space):
    ```bash
    ./setup.sh
@@ -61,16 +67,18 @@ Start `mtx-server`, log in and type these commands.
 
 Start the Windows Client, log in and open **Windows PowerShell**.
 
-1. Put the MigraTux code into `C:\migratux`:
+1. Check that Git is installed: `git --version`. If PowerShell says `git` is not recognized, install Git for Windows from https://git-scm.com/download/win (default options), then open a new PowerShell.
+2. Get the code into `C:\Migratux` (`git pull` if the repo is already there, otherwise clone it into the empty folder; the `.` at the end avoids a nested `Migratux\MigraTux`):
    ```powershell
-   [Net.ServicePointManager]::SecurityProtocol = 'Tls12'
-   Invoke-WebRequest https://github.com/Arkaizn/MigraTux/archive/refs/heads/main.zip -OutFile $env:TEMP\mtx.zip
-   Remove-Item C:\migratux, C:\MigraTux-main -Recurse -Force -ErrorAction SilentlyContinue
-   Expand-Archive $env:TEMP\mtx.zip C:\
-   Rename-Item C:\MigraTux-main migratux
+   New-Item -ItemType Directory C:\Migratux -Force | Out-Null; cd C:\Migratux
+   if (Test-Path .git) { git pull } else { git clone https://github.com/Arkaizn/MigraTux.git . }
    ```
    Run the same block again whenever you need the newest code.
-2. Shut Windows down, take a snapshot and name it `win-clean`.
+   If `git clone` says "already exists and is not an empty directory", `C:\Migratux` holds something that is not the repo (for example the old copy from the zip download). Rename it and run the block again:
+   ```powershell
+   cd C:\; Rename-Item C:\Migratux Migratux-old
+   ```
+3. Shut Windows down, take a snapshot and name it `win-clean`. If your `win-clean` still has the old zip copy, do this part once more and replace the snapshot.
 
 ## 4. Test
 

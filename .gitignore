@@ -5,5 +5,9 @@ brain/
 # MigraTux server: local settings and downloaded/collected data
 server/.env
 server/data/
-# output of the collect scripts
+# output of the collect scripts (out-*/: e.g. out-admin/, out-umlaut/ from the M1 test).
+# Holds hostnames, MACs, IPs, serials: never in the public repo.
 out/
+out-*/
+# Obsidian vault settings (the repo can be opened as a vault)
+.obsidian/

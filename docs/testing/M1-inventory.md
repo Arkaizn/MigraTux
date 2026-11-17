@@ -20,42 +20,47 @@
 
 ## Before you start
 - Lab set up as in [lab-setup.md](../lab-setup.md). Go back to the snapshot `win-clean`.
-- On `mtx-win`: get the newest code into `C:\migratux` (the PowerShell block in [lab-setup.md](../lab-setup.md), part 3). Use **Windows PowerShell** (blue icon), not `pwsh`.
+- On `mtx-win`, in **Windows PowerShell** (blue icon, not `pwsh`), get the code into `C:\Migratux`:
+  ```powershell
+  New-Item -ItemType Directory C:\Migratux -Force | Out-Null; cd C:\Migratux
+  if (Test-Path .git) { git pull } else { git clone https://github.com/Arkaizn/MigraTux.git . }
+  ```
+  The `.` at the end puts the code straight into `C:\Migratux` (no `Migratux\MigraTux`); this only works in an empty folder. If `git clone` says "already exists and is not an empty directory", the folder is not the repo: see [lab-setup.md](../lab-setup.md), part 3.
 - Write down which apps are installed on the VM (for the check in step 4) and which files are in Documents and on the Desktop.
 
 ## Steps
 1. Open Windows PowerShell **as a normal user** (not as administrator):
    ```powershell
    Set-ExecutionPolicy -Scope Process Bypass
-   cd C:\migratux
-   .\collect\Get-Inventory.ps1 -OutDir C:\migratux\out
+   cd C:\Migratux
+   .\collect\Get-Inventory.ps1 -OutDir C:\Migratux\out
    echo "exit code: $LASTEXITCODE"
    ```
 2. Check the file against the contract:
    ```powershell
-   .\collect\Test-InventoryCsv.ps1 -Path C:\migratux\out\inventory-$env:COMPUTERNAME.csv | Format-List
+   .\collect\Test-InventoryCsv.ps1 -Path C:\Migratux\out\inventory-$env:COMPUTERNAME.csv | Format-List
    ```
 3. Count the rows per category:
    ```powershell
-   $rows = Import-Csv C:\migratux\out\inventory-$env:COMPUTERNAME.csv
+   $rows = Import-Csv C:\Migratux\out\inventory-$env:COMPUTERNAME.csv
    $rows | Group-Object Category | Format-Table Name, Count
    $rows | Where-Object Category -eq app | Sort-Object Name | Format-Table Name, Version, Extra
    $rows | Where-Object Category -ne app | Format-Table Category, Name, Path, SizeMB, Extra
    ```
 4. Compare with Windows: Settings > Apps > Installed apps.
-5. Repeat step 1 in a PowerShell **as administrator** with `-OutDir C:\migratux\out-admin`, and compare the `userfolder` rows.
+5. Repeat step 1 in a PowerShell **as administrator** with `-OutDir C:\Migratux\out-admin`, and compare the `userfolder` rows.
 6. Optional, together with `docs/testing/M0-ps51-checker.md`: the Pester suite on PowerShell 5.1 (expect `Failed: 0`).
 
 ## Expected result
-- [ ] Step 1: last line starts with `OK:` and `exit code: 0`. No red text.
-- [ ] Step 2: `Valid : True`, `Errors : {}`.
-- [ ] Step 3: all five categories appear: `app`, `userfolder`, `printer`, `network`, `hardware`.
-- [ ] Every app you installed on the VM appears (e.g. Chrome, Firefox, 7-Zip, VLC). No Windows updates (KB…) in the list.
-- [ ] `userfolder`: Desktop, Documents, Pictures … of your user, with a plausible size and file count.
-- [ ] `network`: one `type=adapter` row with the MAC address of the VM (compare with `getmac`).
-- [ ] `hardware`: `OS`, `Model`, `RAM`, `CPU`, `Disk` with `free_mb=`. `OS` has `firmware=uefi`.
-- [ ] Umlauts in names (e.g. a printer or folder with `ü`) are correct when you open the CSV in Notepad.
-- [ ] Step 5: as administrator the CSV also has the folders of the other users; as a normal user the log says they were skipped.
+- [x] Step 1: last line starts with `OK:` and `exit code: 0`. No red text.
+- [x] Step 2: `Valid : True`, `Errors : {}`.
+- [x] Step 3: all five categories appear: `app`, `userfolder`, `printer`, `network`, `hardware`.
+- [x] Every app you installed on the VM appears (e.g. Chrome, Firefox, 7-Zip, VLC). No Windows updates (KB…) in the list.
+- [x] `userfolder`: Desktop, Documents, Pictures … of your user, with a plausible size and file count.
+- [x] `network`: one `type=adapter` row with the MAC address of the VM (compare with `getmac`).
+- [x] `hardware`: `OS`, `Model`, `RAM`, `CPU`, `Disk` with `free_mb=`. `OS` has `firmware=uefi`.
+- [x] Umlauts in names (e.g. a printer or folder with `ü`) are correct when you open the CSV in Notepad.
+- [x] Step 5: as administrator the CSV also has the folders of the other users; as a normal user the log says they were skipped.
 
 ## If it fails
 - "running scripts is disabled": the `Set-ExecutionPolicy` line was skipped.
@@ -77,6 +82,13 @@ Problem (if any): what you saw, at which step
 ```
 
 Attach:
-- the log file: `C:\migratux\out\inventory.log`
-- the output files: `C:\migratux\out\inventory-<HOSTNAME>.csv` (and the one from `out-admin`)
+- the log file: `C:\Migratux\out\inventory.log`
+- the output files: `C:\Migratux\out\inventory-<HOSTNAME>.csv` (and the one from `out-admin`)
 - a screenshot of: step 3
+
+## Results
+Result files are in [results/](results/). The output folders (`out`, `out-admin`, …) are not in the repo: they contain hostnames, MAC and IP addresses.
+
+| Date | Result | File |
+|---|---|---|
+| 2026-11-17 | OK (Windows 10, PowerShell 5.1; Store apps not listed: known limit) | [results/M1-2026-11-17.md](results/M1-2026-11-17.md) |

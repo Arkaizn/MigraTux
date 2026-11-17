@@ -22,12 +22,20 @@ To keep the Windows VM, the Linux install goes to `mtx-pxe`, which the server is
 
 ## Before you start
 - Lab set up as in [lab-setup.md](../lab-setup.md). Go back to the snapshots in the table above (**VM → Snapshot → Revert**).
-- Start `mtx-server` and get the newest code (nothing is downloaded again):
+- Start `mtx-server`, get the code into `~/MigraTux` and start the server (the ISO is not downloaded again):
   ```bash
-  cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d
+  mkdir -p ~/MigraTux && cd ~/MigraTux
+  if [ -d .git ]; then git pull; else git clone https://github.com/Arkaizn/MigraTux.git .; fi &&
+  cd server && ./setup.sh && docker compose up -d
   docker compose ps          # samba, pxe, nfs, http: all "running"
   ```
-- On `mtx-win`: get the newest code into `C:\migratux` (the PowerShell block in [lab-setup.md](../lab-setup.md), part 3). Use **Windows PowerShell** (blue icon), not `pwsh`.
+  If `git clone` says "already exists and is not an empty directory", `~/MigraTux` is not the repo: see [lab-setup.md](../lab-setup.md), part 2.
+- On `mtx-win`, in **Windows PowerShell** (blue icon, not `pwsh`), get the code into `C:\Migratux`:
+  ```powershell
+  New-Item -ItemType Directory C:\Migratux -Force | Out-Null; cd C:\Migratux
+  if (Test-Path .git) { git pull } else { git clone https://github.com/Arkaizn/MigraTux.git . }
+  ```
+  The `.` at the end puts the code straight into `C:\Migratux` (no `Migratux\MigraTux`); this only works in an empty folder. If `git clone` says "already exists and is not an empty directory", the folder is not the repo: see [lab-setup.md](../lab-setup.md), part 3.
 - In the commands below replace `192.168.80.130` with your server IP (`ip -4 -br addr` on the server).
 - MAC address of `mtx-pxe` (VM > Settings > Network Adapter > Advanced).
 - Good moment for the **test recording** of the timelapse (VM Lab page §5).
@@ -36,12 +44,12 @@ To keep the Windows VM, the Linux install goes to `mtx-pxe`, which the server is
 1. On `mtx-win`, Windows PowerShell as a normal user: create 2000 files with umlauts, then inventory and backup. Note the Windows user name and the computer name `<HOST>` (`hostname`).
    ```powershell
    Set-ExecutionPolicy -Scope Process Bypass
-   cd C:\migratux
+   cd C:\Migratux
    $dir = "$env:USERPROFILE\Documents\Aufträge Müller"
    New-Item -ItemType Directory -Path $dir -Force | Out-Null
    1..2000 | ForEach-Object { "Auftrag $_" | Set-Content "$dir\Auftrag_${_}_Zürich_Größe.txt" }
-   .\collect\Get-Inventory.ps1 -OutDir C:\migratux\out
-   .\collect\Backup-ToServer.ps1 -InventoryPath C:\migratux\out\inventory-$env:COMPUTERNAME.csv `
+   .\collect\Get-Inventory.ps1 -OutDir C:\Migratux\out
+   .\collect\Backup-ToServer.ps1 -InventoryPath C:\Migratux\out\inventory-$env:COMPUTERNAME.csv `
        -Destination \\192.168.80.130\migratux -User migratux -Password ChangeMe-Lab1
    echo "exit code: $LASTEXITCODE"
    ```

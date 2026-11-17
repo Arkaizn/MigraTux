@@ -20,7 +20,12 @@ Prove that `collect/Test-InventoryCsv.ps1` and its Pester tests also work on **W
 
 ## Before you start
 - Lab set up as in [lab-setup.md](../lab-setup.md). Go back to the snapshot `win-clean`.
-- On `mtx-win`: get the newest code into `C:\migratux` (the PowerShell block in [lab-setup.md](../lab-setup.md), part 3). Use **Windows PowerShell** (blue icon), not `pwsh`.
+- On `mtx-win`, in **Windows PowerShell** (blue icon, not `pwsh`), get the code into `C:\Migratux`:
+  ```powershell
+  New-Item -ItemType Directory C:\Migratux -Force | Out-Null; cd C:\Migratux
+  if (Test-Path .git) { git pull } else { git clone https://github.com/Arkaizn/MigraTux.git . }
+  ```
+  The `.` at the end puts the code straight into `C:\Migratux` (no `Migratux\MigraTux`); this only works in an empty folder. If `git clone` says "already exists and is not an empty directory", the folder is not the repo: see [lab-setup.md](../lab-setup.md), part 3.
 
 ## Steps
 1. Open Windows PowerShell.
@@ -31,7 +36,7 @@ Prove that `collect/Test-InventoryCsv.ps1` and its Pester tests also work on **W
 3. Allow scripts for this window only:
    ```powershell
    Set-ExecutionPolicy -Scope Process Bypass
-   cd C:\migratux
+   cd C:\Migratux
    ```
 4. Check the sample file:
    ```powershell
@@ -52,11 +57,11 @@ Prove that `collect/Test-InventoryCsv.ps1` and its Pester tests also work on **W
    ```
 
 ## Expected result
-- [ ] Step 2 shows `5.1.x` and `Desktop`.
-- [ ] Step 4: `Valid : True`, `RowCount : 26`, `Errors : {}`.
-- [ ] Step 5: `Valid : True`, `RowCount : 1`.
-- [ ] Step 6: `Failed: 0` (since M1/M2 the suite also tests `Get-Inventory.ps1` and `Backup-ToServer.ps1`: about 53 passed, 3 skipped, because three tests need Linux or PowerShell 7).
-- [ ] No red error text in any step.
+- [x] Step 2 shows `5.1.x` and `Desktop`.
+- [x] Step 4: `Valid : True`, `RowCount : 26`, `Errors : {}`.
+- [x] Step 5: `Valid : True`, `RowCount : 1`.
+- [x] Step 6: `Failed: 0` (since M1/M2 the suite also tests `Get-Inventory.ps1` and `Backup-ToServer.ps1`: about 53 passed, 3 skipped, because three tests need Linux or PowerShell 7).
+- [x] No red error text in any step.
 
 ## If it fails
 - Red text about the script not being signed or blocked: step 3 was skipped, or run `Unblock-File` on the copied files.
@@ -77,3 +82,10 @@ Problem (if any): step, exact error text
 Attach:
 - the log file: `%TEMP%\pester-ps51.txt`
 - a screenshot of steps 4 and 5
+
+## Results
+Result files are in [results/](results/).
+
+| Date | Result | File |
+|---|---|---|
+| 2026-11-17 | OK (contract checker and Pester on Windows PowerShell 5.1: Failed 0, Skipped 3) | [results/M0-2026-11-17.md](results/M0-2026-11-17.md) |

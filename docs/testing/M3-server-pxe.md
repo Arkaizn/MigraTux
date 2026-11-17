@@ -22,11 +22,14 @@ All VMs on VMware NAT (VMnet8).
 
 ## Before you start
 - Lab set up as in [lab-setup.md](../lab-setup.md). Go back to the snapshots in the table above (**VM → Snapshot → Revert**).
-- Start `mtx-server` and get the newest code (nothing is downloaded again):
+- Start `mtx-server`, get the code into `~/MigraTux` and start the server (the ISO is not downloaded again):
   ```bash
-  cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d
+  mkdir -p ~/MigraTux && cd ~/MigraTux
+  if [ -d .git ]; then git pull; else git clone https://github.com/Arkaizn/MigraTux.git .; fi &&
+  cd server && ./setup.sh && docker compose up -d
   docker compose ps          # samba, pxe, nfs, http: all "running"
   ```
+  If `git clone` says "already exists and is not an empty directory", `~/MigraTux` is not the repo: see [lab-setup.md](../lab-setup.md), part 2.
 
 ## Steps
 1. On `mtx-server`, look up the IP (you need it in step 6) and check the stack:
@@ -49,12 +52,12 @@ All VMs on VMware NAT (VMnet8).
 8. Save the logs: `docker compose logs > ~/m3-compose.log`
 
 ## Expected result
-- [ ] Before you start: `setup.sh` ends with `setup: done`, four services are running (`samba`, `pxe`, `nfs`, `http`).
-- [ ] Step 1: the ISO answers with `200`.
-- [ ] Step 3: the PXE log shows lines with `PXE` and `bootx64.efi`, then `sent /srv/tftp/bootx64.efi`, `grubx64.efi` and `grub/grub.cfg`.
-- [ ] Step 4: the MigraTux menu is visible. **No install starts by itself** (there is no job for this PC).
-- [ ] Step 6: `net use` says the command completed successfully; `dir` lists `test.txt`.
-- [ ] Step 7: the file is on the server.
+- [x] Before you start: `setup.sh` ends with `setup: done`, four services are running (`samba`, `pxe`, `nfs`, `http`).
+- [x] Step 1: the ISO answers with `200`.
+- [x] Step 3: the PXE log shows lines with `PXE` and `bootx64.efi`, then `sent /srv/tftp/bootx64.efi`, `grubx64.efi` and `grub/grub.cfg`.
+- [x] Step 4: the MigraTux menu is visible. **No install starts by itself** (there is no job for this PC).
+- [x] Step 6: `net use` says the command completed successfully; `dir` lists `test.txt`.
+- [x] Step 7: the file is on the server.
 
 ## If it fails
 - `setup.sh`: "SERVER_IP … is not an IPv4 address" or "is empty": fix `server/.env`.

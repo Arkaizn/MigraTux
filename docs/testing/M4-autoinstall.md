@@ -20,11 +20,14 @@ An empty PC becomes an Ubuntu 24.04 desktop with no input: network boot, install
 
 ## Before you start
 - Lab set up as in [lab-setup.md](../lab-setup.md). Go back to the snapshots in the table above (**VM → Snapshot → Revert**).
-- Start `mtx-server` and get the newest code (nothing is downloaded again):
+- Start `mtx-server`, get the code into `~/MigraTux` and start the server (the ISO is not downloaded again):
   ```bash
-  cd ~/MigraTux/server && git pull && ./setup.sh && docker compose up -d
+  mkdir -p ~/MigraTux && cd ~/MigraTux
+  if [ -d .git ]; then git pull; else git clone https://github.com/Arkaizn/MigraTux.git .; fi &&
+  cd server && ./setup.sh && docker compose up -d
   docker compose ps          # samba, pxe, nfs, http: all "running"
   ```
+  If `git clone` says "already exists and is not an empty directory", `~/MigraTux` is not the repo: see [lab-setup.md](../lab-setup.md), part 2.
 - The MAC address of `mtx-pxe`: VM > Settings > Network Adapter > Advanced > MAC Address.
 
 ## Steps
@@ -59,14 +62,14 @@ An empty PC becomes an Ubuntu 24.04 desktop with no input: network boot, install
 9. Optional, only when everything above was OK: measure the RAM. Revert `mtx-pxe` to `pxe-empty`, set its memory to **4 GB**, run steps 1-5 again. Note if it works. (A snapshot revert also sets the memory back to the value of the snapshot. Check the setting after every revert.)
 
 ## Expected result
-- [ ] No key was pressed between power-on and the login screen.
-- [ ] `migratux status` showed `install`, later `installed`, later `failed: Kein Inventar …`; "PXE-Job" is gone after the install.
-- [ ] After the reboot the PC does **not** install a second time.
-- [ ] Login as `mtxadmin` works; the desktop is German; the keyboard layout is Swiss (`z`/`y`, `ä ö ü`).
-- [ ] Step 6: `LANG=de_CH.UTF-8`, layout `ch`, `ssh` and `NetworkManager` are `active`.
-- [ ] Step 7: SSH login works.
-- [ ] Time from power-on to login screen: ____ min.
-- [ ] Step 9 (optional): the install works with 4 GB RAM: yes / no / not tried.
+- [x] No key was pressed between power-on and the login screen.
+- [x] `migratux status` showed `install`, later `installed`, later `failed: Kein Inventar …`; "PXE-Job" is gone after the install.
+- [x] After the reboot the PC does **not** install a second time.
+- [x] Login as `mtxadmin` works; the desktop is German; the keyboard layout is Swiss (`z`/`y`, `ä ö ü`).
+- [x] Step 6: `LANG=de_CH.UTF-8`, layout `ch`, `ssh` and `NetworkManager` are `active`.
+- [x] Step 7: SSH login works.
+- [x] Time from power-on to login screen: 13 min.
+- [x] Step 9 (optional): the install works with 4 GB RAM: yes / no / not tried.
 
 ## If it fails
 - After "lade Installer" the screen shows "Unable to find a live file system on the network" and an `(initramfs)` prompt: the installer could not mount `SERVER_IP:/srv/nfsroot`. On the server: `docker compose ps` (is `nfs` running?) and `docker compose logs nfs` (is there a line "authenticated mount request from" the client?). No such line: the client does not reach the ports 111, 2049, 20048 (firewall on the server: `sudo ufw status`), or its IP is not in the subnet named in the line "NFS: exporting …". Take a screenshot of the lines above the prompt.
