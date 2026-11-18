@@ -31,3 +31,4 @@ Results of the manual VM tests, next to the guides in [`docs/testing/`](../).
 | M4 | 2026-11-17 | OK in runs 3 and 4 (NFS netboot; needs internet; e1000 hang fixed with vmxnet3; works with 4 GB RAM) | [M4-2026-11-17.md](M4-2026-11-17.md) |
 | M1 | 2026-11-17 | OK (Windows 10, PowerShell 5.1; Store apps not listed: known limit) | [M1-2026-11-17.md](M1-2026-11-17.md) |
 | M0 | 2026-11-17 | OK (contract checker and Pester on Windows PowerShell 5.1: Failed 0, Skipped 3) | [M0-2026-11-17.md](M0-2026-11-17.md) |
+| M7 | 2026-11-18 | PARTIAL (part 1 OK: help, status, refusals, start/stop, log; parts 2–3 pending with M5/M6) | [M7-2026-11-18.md](M7-2026-11-18.md) |

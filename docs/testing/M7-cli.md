@@ -1,22 +1,22 @@
 # M7: Control command and info screen (manual VM test)
 
-| | |
-|---|---|
-| Milestone | M7 |
-| Test doc version | 2026-11-11 |
-| Time estimate | ~15 min on its own; the screen checks are done **during M5 and M6** |
-| Destructive? | no (steps 1–6). The screen checks belong to the M5/M6 runs. |
+|                  |                                                                     |
+| ---------------- | ------------------------------------------------------------------- |
+| Milestone        | M7                                                                  |
+| Test doc version | 2026-11-11                                                          |
+| Time estimate    | ~15 min on its own; the screen checks are done **during M5 and M6** |
+| Destructive?     | no (steps 1–6). The screen checks belong to the M5/M6 runs.         |
 
 ## Goal
 A technician controls a migration with one command on the server (`migratux status|start|rollback|stop`) and always sees where each PC is. The user at the PC sees a simple screen with the current step, the remaining time and what to do next (e.g. turn network boot off).
 
 ## VMs needed
 
-| VM | Needed | Snapshot to restore first | Notes |
-|---|---|---|---|
-| `mtx-server` | ☑ | `server-clean` | |
-| `mtx-win` | ☑ | `win-clean` | for one inventory + backup |
-| `mtx-pxe` | ☐ | – | only if you combine it with M5 |
+| VM           | Needed | Snapshot to restore first | Notes                          |
+| ------------ | ------ | ------------------------- | ------------------------------ |
+| `mtx-server` | ☑      | `server-clean`            |                                |
+| `mtx-win`    | ☑      | `win-clean`               | for one inventory + backup     |
+| `mtx-pxe`    | ☐      | –                         | only if you combine it with M5 |
 
 ## Before you start
 - Lab set up as in [lab-setup.md](../lab-setup.md). Go back to the snapshots in the table above (**VM → Snapshot → Revert**).
@@ -69,7 +69,10 @@ Part 1, on `mtx-server` in `~/MigraTux/server`. No PC is booted in this part.
    ./migratux stop <HOST>
    ./migratux status <HOST>          # PXE-Job: keiner
    ```
-4. Log: `tail -n 20 data/log/migratux.log`
+4. Log:
+   ```bash
+   tail -n 20 data/log/migratux.log
+   ```
 
 Part 2, during the M5 run (client `mtx-pxe`):
 5. Keep `watch -n 10 ./migratux status` open on the server and note each step text with the time.
@@ -79,10 +82,10 @@ Part 2, during the M5 run (client `mtx-pxe`):
 Part 3, during the M6 run: note the status texts for `image`, `install`, `restore`, `restored`.
 
 ## Expected result
-- [ ] Step 1: `help` lists `status`, `start`, `rollback`, `stop`, `assign`, `unassign`. `status` shows per PC: inventory, MAC, backup, disk image, PXE job, last step.
-- [ ] Step 2: all three refuse with a clear `ERROR:` line and `exit: 1`. No file appears in `data/tftp/grub/hosts/`.
-- [ ] Step 3: `start` sets the job, `stop` removes it; if the PC has under 3 GB RAM, `start` prints a warning.
-- [ ] Step 4: every command is in the log with date and time.
+- [x] Step 1: `help` lists `status`, `start`, `rollback`, `stop`, `assign`, `unassign`. `status` shows per PC: inventory, MAC, backup, disk image, PXE job, last step.
+- [x] Step 2: all three refuse with a clear `ERROR:` line and `exit: 1`. No file appears in `data/tftp/grub/hosts/`.
+- [x] Step 3: `start` sets the job, `stop` removes it; if the PC has under 3 GB RAM, `start` prints a warning.
+- [x] Step 4: every command is in the log with date and time.
 - [ ] Step 5: the status followed the client step by step, with a remaining time during the first boot.
 - [ ] Step 6: the screen is readable (umlauts correct), shows `[x]` for done steps and `[>]` for the current one, and the remaining time goes down. First estimate ____ min, real ____ min.
 - [ ] Step 6: the final screen names the next steps (network boot off, login name, start password, report).
@@ -110,3 +113,10 @@ Attach:
 - the log file: `server/data/log/migratux.log`
 - the output of steps 1–3
 - photos of: the info screen (start, middle, end)
+
+## Results
+Logs and screenshots are in [results/m7/](results/m7/).
+
+| Date | Result | File |
+|---|---|---|
+| 2026-11-18 | PARTIAL: part 1 (steps 1–4) OK; parts 2 and 3 pending (with M5 and M6) | [results/M7-2026-11-18.md](results/M7-2026-11-18.md) |
